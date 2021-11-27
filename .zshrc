@@ -11,9 +11,13 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
+zinit ice depth=1
+zinit light agkozak/zsh-z
 
 zinit ice depth=1
 zinit light marlonrichert/zsh-autocomplete
+zstyle ':autocomplete:*' recent-dirs zsh-z
+zstyle ':autocomplete:*' widget-style menu-select
 
 zinit ice depth=1
 zinit light 3v1n0/zsh-bash-completions-fallback

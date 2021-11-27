@@ -1,6 +1,6 @@
 # Install
 
-    $ git clone https://github.com/jbro/zsh ~/.config/zsh
+    $ git clone https://github.com/jbro/zshrc.git ~/.config/zsh
 
 Create `~/.zshenv` containing:
 

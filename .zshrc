@@ -11,9 +11,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
-# zinit ice depth=1
-# zinit light zsh-users/zsh-autosuggestions
-# ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
 zinit ice depth=1
 zinit light marlonrichert/zsh-autocomplete

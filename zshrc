@@ -15,9 +15,15 @@ fi
 zinit ice depth=1
 zinit light birdhackor/zsh-exa-ls-plugin
 
+# zinit ice depth=1
+# zinit light zsh-users/zsh-autosuggestions
+# ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+
 zinit ice depth=1
-zinit light zsh-users/zsh-autosuggestions
-ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+zinit light marlonrichert/zsh-autocomplete
+
+zinit ice depth=1
+zinit light 3v1n0/zsh-bash-completions-fallback
 
 zinit ice depth=1
 zinit light zsh-users/zsh-completions

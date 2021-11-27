@@ -18,6 +18,7 @@ zinit ice depth=1
 zinit light marlonrichert/zsh-autocomplete
 zstyle ':autocomplete:*' recent-dirs zsh-z
 zstyle ':autocomplete:*' widget-style menu-select
+zstyle ":completion:*:commands" rehash 1
 
 zinit ice depth=1
 zinit light 3v1n0/zsh-bash-completions-fallback

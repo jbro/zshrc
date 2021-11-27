@@ -1,4 +1,3 @@
-
 declare -A ZINIT
 ZINIT[BIN_DIR]=~/.config/zsh/zinit/zinit.git
 ZINIT[HOME_DIR]=~/.config/zsh/zinit
@@ -11,9 +10,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
-
-zinit ice depth=1
-zinit light birdhackor/zsh-exa-ls-plugin
 
 # zinit ice depth=1
 # zinit light zsh-users/zsh-autosuggestions
@@ -46,6 +42,9 @@ export EDITOR=nvim
 alias ssh="kitty +kitten ssh"
 
 alias vim=nvim
+
+alias ls="exa --classify"
+alias tree="ls --tree"
 
 source <(grc-rs --aliases)
 

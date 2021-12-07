@@ -55,5 +55,7 @@ cdpath=(~/work ~/projects)
 
 export PATH=~/.local/bin:$PATH
 
-echo "\033[0;35m$(fortune -e -s)\033[0m\n"
+if [ "$(tty)" != "/dev/tty1" ]; then
+  echo "\033[0;35m$(fortune -e -s)\033[0m\n"
+fi
 

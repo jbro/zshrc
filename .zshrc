@@ -1,3 +1,5 @@
+bindkey -e
+
 declare -A ZINIT
 ZINIT[BIN_DIR]=~/.config/zsh/zinit/zinit.git
 ZINIT[HOME_DIR]=~/.config/zsh/zinit
@@ -27,7 +29,6 @@ zinit light 3v1n0/zsh-bash-completions-fallback
 zinit ice depth=1
 zinit light zsh-users/zsh-completions
 
-bindkey -e
 
 export HISTFILE=${HOME}/.zhistory
 export HISTSIZE=10000

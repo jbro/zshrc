@@ -7,6 +7,7 @@ systemctl --user set-environment SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socke
 systemctl --user set-environment DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
 
 #mehs
+systemctl --user set-environment GDK_BACKEND=wayland
 systemctl --user set-environment CLUTTER_BACKEND=wayland
 systemctl --user set-environment XDG_SESSION_TYPE=wayland
 systemctl --user set-environment XDG_CURRENT_DESKTOP=Unity
@@ -15,7 +16,6 @@ systemctl --user set-environment QT_WAYLAND_FORCE_DPI=physical
 systemctl --user set-environment QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 systemctl --user set-environment SDL_VIDEODRIVER=wayland
 systemctl --user set-environment MOZ_WEBRENDER=1
-systemctl --user set-environment GOPATH=/home/jbr/.go
 
 export $(systemctl --user show-environment)
 

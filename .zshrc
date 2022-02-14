@@ -29,7 +29,7 @@ zinit light zsh-users/zsh-completions
 
 bindkey -e
 
-export HISTFILE=${ZDOTDIR:-$HOME}/.zhistory
+export HISTFILE=${HOME}/.zhistory
 export HISTSIZE=10000
 export SAVEHIST=10000
 setopt APPEND_HISTORY
@@ -42,7 +42,7 @@ setopt INTERACTIVE_COMMENTS
 
 export EDITOR=nvim
 
-alias ssh="kitty +kitten ssh"
+alias ssh="TERM=xterm-256color ssh"
 
 alias vim=nvim
 

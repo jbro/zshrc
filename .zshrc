@@ -13,15 +13,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
-zinit ice depth=1
-zinit light agkozak/zsh-z
-
-zinit ice depth=1
-zinit light marlonrichert/zsh-autocomplete
-zstyle ':autocomplete:*' recent-dirs zsh-z
-zstyle ':autocomplete:*' widget-style menu-select
-zstyle ':autocomplete:*' min-input 1
-zstyle ':completion:*:commands' rehash 1
+source /usr/share/fzf/completion.zsh
+source /usr/share/fzf/key-bindings.zsh
 
 zinit ice depth=1
 zinit light 3v1n0/zsh-bash-completions-fallback
@@ -29,6 +22,12 @@ zinit light 3v1n0/zsh-bash-completions-fallback
 zinit ice depth=1
 zinit light zsh-users/zsh-completions
 
+zinit ice depth=1
+zinit light marlonrichert/zsh-autocomplete
+zstyle ':autocomplete:*' fzf-completion yes
+zstyle ':autocomplete:*' insert-unambiguous yes
+
+zstyle ':completion:*:commands' rehash 1
 
 export HISTFILE=${HOME}/.zhistory
 export HISTSIZE=10000

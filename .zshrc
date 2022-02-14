@@ -24,8 +24,10 @@ zinit light zsh-users/zsh-completions
 
 zinit ice depth=1
 zinit light marlonrichert/zsh-autocomplete
+
 zstyle ':autocomplete:*' fzf-completion yes
 zstyle ':autocomplete:*' insert-unambiguous yes
+zstyle ':autocomplete:*' widget-style menu-select
 
 zstyle ':completion:*:commands' rehash 1
 

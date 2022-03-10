@@ -55,7 +55,7 @@ alias ssh="TERM=xterm-256color ssh"
 alias vim=nvim
 
 alias ls="exa --classify"
-alias tree="ls --tree"
+alias tree="exa --tree"
 
 source <(grc-rs --aliases)
 

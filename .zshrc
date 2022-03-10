@@ -25,15 +25,16 @@ zinit light 3v1n0/zsh-bash-completions-fallback
 autoload compinit
 compinit
 
-# zinit ice depth=1
-# zinit light zsh-users/zsh-autosuggestions
-
 zinit ice depth=1
-zinit light marlonrichert/zsh-autocomplete
-zstyle ':autocomplete:*' fzf-completion yes
-zstyle ':autocomplete:*' insert-unambiguous yes
-zstyle ':autocomplete:*' min-input 1
-zstyle ':autocomplete:*' widget-style menu-select
+zinit light zsh-users/zsh-autosuggestions
+
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
+zstyle ':completion:*' group-name ''
+. /usr/share/LS_COLORS/dircolors.sh
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' squeeze-slashes true
 
 zstyle ':completion:*:commands' rehash 1
 

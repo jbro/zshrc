@@ -17,16 +17,22 @@ source /usr/share/fzf/completion.zsh
 source /usr/share/fzf/key-bindings.zsh
 
 zinit ice depth=1
-zinit light 3v1n0/zsh-bash-completions-fallback
-
-zinit ice depth=1
 zinit light zsh-users/zsh-completions
 
 zinit ice depth=1
-zinit light marlonrichert/zsh-autocomplete
+zinit light 3v1n0/zsh-bash-completions-fallback
 
+autoload compinit
+compinit
+
+# zinit ice depth=1
+# zinit light zsh-users/zsh-autosuggestions
+
+zinit ice depth=1
+zinit light marlonrichert/zsh-autocomplete
 zstyle ':autocomplete:*' fzf-completion yes
 zstyle ':autocomplete:*' insert-unambiguous yes
+zstyle ':autocomplete:*' min-input 1
 zstyle ':autocomplete:*' widget-style menu-select
 
 zstyle ':completion:*:commands' rehash 1

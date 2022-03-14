@@ -22,12 +22,14 @@ zinit light zsh-users/zsh-completions
 zinit ice depth=1
 zinit light 3v1n0/zsh-bash-completions-fallback
 
+autoload bashcompinit
+bashcompinit
+
 autoload compinit
 compinit
 
 zinit ice depth=1
 zinit light zsh-users/zsh-autosuggestions
-
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
@@ -37,6 +39,8 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' squeeze-slashes true
 
 zstyle ':completion:*:commands' rehash 1
+
+complete -C '/usr/bin/aws_completer' aws
 
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search

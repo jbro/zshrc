@@ -30,6 +30,8 @@ compinit
 
 zinit ice depth=1
 zinit light zsh-users/zsh-autosuggestions
+bindkey '^[[1;3C' forward-word # Alt right
+bindkey '^[[1;3D' backward-word # Alt left
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'

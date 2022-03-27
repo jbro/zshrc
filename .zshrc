@@ -39,6 +39,7 @@ zstyle ':completion:*' group-name ''
 . /usr/share/LS_COLORS/dircolors.sh
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 
 zstyle ':completion:*:commands' rehash 1
 

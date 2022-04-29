@@ -52,12 +52,15 @@ zle -N down-line-or-beginning-search
 bindkey "^[[A" up-line-or-beginning-search # Up
 bindkey "^[[B" down-line-or-beginning-search # Down
 
+# Use directory delimiter as word delimiter
+autoload -U select-word-style
+select-word-style bash
+
 export HISTFILE=${HOME}/.zhistory
 export HISTSIZE=10000
 export SAVEHIST=10000
 setopt APPEND_HISTORY
 setopt EXTENDED_HISTORY
-setopt SHARE_HISTORY
 setopt HIST_IGNORE_SPACE
 setopt HIST_IGNORE_ALL_DUPS
 

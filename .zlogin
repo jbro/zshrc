@@ -19,6 +19,8 @@ systemctl --user set-environment MOZ_WEBRENDER=1
 
 export $(systemctl --user show-environment)
 
+systemctl --user import-environment SWAYSOCK WAYLAND_DISPLAY
+
 systemd-cat -t sway sway
 systemctl --user stop sway-session.target
 systemctl --user unset-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK

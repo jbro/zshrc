@@ -33,6 +33,8 @@ zinit light zsh-users/zsh-autosuggestions
 bindkey '^[[1;3C' forward-word # Alt right
 bindkey '^[[1;3D' backward-word # Alt left
 
+bindkey "^[[3~" delete-char # Delete
+
 zstyle ':completion:*' menu select
 zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
 zstyle ':completion:*' group-name ''
@@ -42,6 +44,9 @@ zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 
 zstyle ':completion:*:commands' rehash 1
+
+zinit ice depth=1
+zinit light AnimiVulpis/zsh-terminal-title
 
 complete -C '/usr/bin/aws_completer' aws
 

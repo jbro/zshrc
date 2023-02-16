@@ -1,66 +1,15 @@
+# Emacs keybindings
 bindkey -e
 
+# Install zinit under .config/zsh
 declare -A ZINIT
 ZINIT[BIN_DIR]=~/.config/zsh/zinit/zinit.git
 ZINIT[HOME_DIR]=~/.config/zsh/zinit
+# Install zinit if not pressent
 [ -d "${ZINIT[BIN_DIR]}" ] || git clone https://github.com/zdharma-continuum/zinit.git "${ZINIT[BIN_DIR]}"
 source "${ZINIT[BIN_DIR]}/zinit.zsh"
 
-zinit ice depth=1
-zinit light romkatv/powerlevel10k
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
-
-source /usr/share/fzf/completion.zsh
-source /usr/share/fzf/key-bindings.zsh
-
-zinit ice depth=1
-zinit light zsh-users/zsh-completions
-
-zinit ice depth=1
-zinit light 3v1n0/zsh-bash-completions-fallback
-
-autoload bashcompinit
-bashcompinit
-
-autoload compinit
-compinit
-
-zinit ice depth=1
-zinit light zsh-users/zsh-autosuggestions
-bindkey '^[[1;3C' forward-word # Alt right
-bindkey '^[[1;3D' backward-word # Alt left
-
-bindkey "^[[3~" delete-char # Delete
-
-zstyle ':completion:*' menu select
-zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
-zstyle ':completion:*' group-name ''
-. /usr/share/LS_COLORS/dircolors.sh
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' squeeze-slashes true
-zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
-
-zstyle ':completion:*:commands' rehash 1
-
-zinit ice depth=1
-zinit light AnimiVulpis/zsh-terminal-title
-
-complete -C '/usr/bin/aws_completer' aws
-
-autoload -U up-line-or-beginning-search
-autoload -U down-line-or-beginning-search
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-search
-bindkey "^[[A" up-line-or-beginning-search # Up
-bindkey "^[[B" down-line-or-beginning-search # Down
-
-# Use directory delimiter as word delimiter
-autoload -U select-word-style
-select-word-style bash
-
+# Set up history
 export HISTFILE=${HOME}/.zhistory
 export HISTSIZE=10000
 export SAVEHIST=10000
@@ -69,24 +18,112 @@ setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_SPACE
 setopt HIST_IGNORE_ALL_DUPS
 
+# When pressing up limit history to prefix
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search # Up
+bindkey "^[[B" down-line-or-beginning-search # Down
+
+# Use directory delimiter as word delimiter,
+# useful when using fish style completion
+autoload -U select-word-style
+select-word-style bash
+
+# Allow comments on the commandline,
+# can be used to tag commands for easier searching
 setopt INTERACTIVE_COMMENTS
 
-export EDITOR=nvim
+# Various Mac fixes
+if [[ $(uname -o) == "Darwin" ]]; then
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US
+fi
 
-alias ssh="TERM=xterm-256color ssh"
+# Setup homebrew
+if [[ -f /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  export PATH=~/.local/bin:$PATH
+fi
 
-alias vim=nvim
+# Set up our favorite editor
+if (( $+commands[nvim] )); then
+  export EDITOR=nvim
+  alias vim=nvim
+fi
 
-alias ls="exa --classify"
-alias tree="exa --tree"
+# Use exa as ls
+if (( $+commands[exa] )); then
+  alias ls="exa --classify"
+  alias tree="exa --tree"
+fi
 
-source <(grc-rs --aliases)
+# Delete to trash
+if (( $+commands[trash] )); then
+  alias rm=trash
+fi
 
-cdpath=(~/work ~/projects)
+# Set up quick cd'ing to project dirs
+if [[ -d ~/Projects ]]; then
+  cdpath=($cdpath ~/Projects)
+fi
 
-export PATH=~/.local/bin:$PATH
+# Apply gruvbox dark theme to ls and friends (generated with: vivid generate gruvbox-dark)
+LS_COLORS=$(<~/.config/zsh/lscolors-gruvbox)
 
+# Set up completion style like I want it
+zstyle ':completion:*' menu select
+zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*:commands' rehash 1
+
+# Very nice zsh theme
+zinit ice depth=1
+zinit light romkatv/powerlevel10k
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+source ~/.config/zsh/.p10k.zsh
+
+# XXX hack to make asdf load bash completion
+# Figure out where this goes
+autoload bashcompinit
+bashcompinit
+# Setup asdf
+zinit ice if'[[ -f  ~/.asdf/asdf.sh ]]'
+zinit snippet OMZP::asdf
+
+# Borrow aws plugin from Oh my zsh
+zinit ice has aws
+zinit snippet OMZP::aws
+
+# Borrow fzf plugin from Oh my zsh
+zinit ice has fzf
+zinit snippet OMZP::fzf
+
+# Load a bunch of additional completions
+zinit ice depth=1
+zinit light zsh-users/zsh-completions
+
+# Set the terminal title
+zinit ice depth=1
+zinit light olets/zsh-window-title
+
+# Fish like suggestion based completion
+zinit ice depth=1
+zinit light zsh-users/zsh-autosuggestions
+
+# Enable auto completions, should be one of the last things we do
+autoload -Uz compinit
+compinit
+zinit cdreplay -q
+
+#
 if [ "$(tty)" != "/dev/tty1" ]; then
-  echo "\033[0;35m$(fortune -e -s)\033[0m\n"
+  echo "\033[0;36m$(fortune -e -s)\033[0m\n"
 fi
 

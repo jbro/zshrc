@@ -117,6 +117,9 @@ zinit light olets/zsh-window-title
 zinit ice depth=1
 zinit light zsh-users/zsh-autosuggestions
 
+# Let me know how to get missing commands
+zinit snippet OMZP::command-not-found
+
 # Enable auto completions, should be one of the last things we do
 autoload -Uz compinit
 compinit

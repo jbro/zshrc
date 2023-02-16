@@ -1,3 +1,6 @@
+.zshenv
 .zhistory
 .zcompdump
 zinit/
+.zcompcache/
+.zsh_sessions/

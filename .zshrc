@@ -124,6 +124,9 @@ zinit snippet OMZP::command-not-found
 zinit ice if'[[ -d /Applications/ForkLift.app ]]'
 zinit snippet OMZP::forklift
 
+# Super easy sudo prefixing
+zinit snippet OMZP::sudo
+
 # Enable auto completions, should be one of the last things we do
 autoload -Uz compinit
 compinit

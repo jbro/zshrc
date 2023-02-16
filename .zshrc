@@ -13,7 +13,7 @@ source "${ZINIT[BIN_DIR]}/zinit.zsh"
 export HISTFILE=${HOME}/.zhistory
 export HISTSIZE=10000
 export SAVEHIST=10000
-setopt APPEND_HISTORY
+setopt SHARE_HISTORY
 setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_SPACE
 setopt HIST_IGNORE_ALL_DUPS

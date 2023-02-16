@@ -127,6 +127,10 @@ zinit snippet OMZP::forklift
 # Super easy sudo prefixing
 zinit snippet OMZP::sudo
 
+# Aliases to open files in VSCode
+zinit ice has code
+zinit snippet OMZP::vscode
+
 # Enable auto completions, should be one of the last things we do
 autoload -Uz compinit
 compinit

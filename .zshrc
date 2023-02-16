@@ -120,6 +120,10 @@ zinit light zsh-users/zsh-autosuggestions
 # Let me know how to get missing commands
 zinit snippet OMZP::command-not-found
 
+# Easy open folders in forklift
+zinit ice if'[[ -d /Applications/ForkLift.app ]]'
+zinit snippet OMZP::forklift
+
 # Enable auto completions, should be one of the last things we do
 autoload -Uz compinit
 compinit

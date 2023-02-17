@@ -95,7 +95,7 @@ zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*:commands' rehash 1
 
 # Very nice zsh theme
-zinit ice depth=1
+zinit ice depth:1
 zinit light romkatv/powerlevel10k
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -110,31 +110,25 @@ fi
 
 
 # Borrow aws plugin from Oh my zsh
-zinit ice has aws
-zinit ice wait lucid
+zinit ice wait lucid has:'aws'
 zinit snippet OMZP::aws
 
 # Borrow fzf plugin from Oh my zsh
-zinit ice has fzf
-zinit ice wait lucid
-zinit ice atload'export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --color=bg+:#3c3836,bg:#1d2021,spinner:#8ec07c,hl:#83a598 \
+zinit ice wait lucid has:'fzf' atload'export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --color=bg+:#3c3836,bg:#1d2021,spinner:#8ec07c,hl:#83a598 \
     --color=fg:#bdae93,header:#83a598,info:#fabd2f,pointer:#8ec07c \
     --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598"'
 zinit snippet OMZP::fzf
 
 # Load a bunch of additional completions
-zinit ice depth=1
-zinit ice wait lucid
+zinit ice wait lucid depth:1 blockf
 zinit light zsh-users/zsh-completions
 
 # Set the terminal title
-zinit ice depth=1
-zinit ice wait lucid
+zinit ice wait lucid depth:1
 zinit light olets/zsh-window-title
 
 # Fish like suggestion based completion
-zinit ice depth=1
-zinit ice wait lucid
+zinit ice wait lucid depth:1
 zinit light zsh-users/zsh-autosuggestions
 
 # Let me know how to get missing commands
@@ -142,8 +136,7 @@ zinit ice wait lucid
 zinit snippet OMZP::command-not-found
 
 # Easy open folders in forklift
-zinit ice if'[[ -d /Applications/ForkLift.app ]]'
-zinit ice wait lucid
+zinit ice wait lucid if'[[ -d /Applications/ForkLift.app ]]'
 zinit snippet OMZP::forklift
 
 # Super easy sudo prefixing
@@ -151,13 +144,11 @@ zinit ice wait lucid
 zinit snippet OMZP::sudo
 
 # Aliases to open files in VSCode
-zinit ice has code
-zinit ice wait lucid
+zinit ice wait lucid has:'code'
 zinit snippet OMZP::vscode
 
 # Syntax hilight zsh oneliners while typing
-zinit ice depth=1
-zinit ice wait lucid
+zinit ice wait lucid depth:1
 zinit light zdharma-continuum/fast-syntax-highlighting
 
 # Enable auto completions, should be one of the last things we do

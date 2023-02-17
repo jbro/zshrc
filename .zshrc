@@ -37,8 +37,8 @@ setopt INTERACTIVE_COMMENTS
 
 # Various Mac fixes
 if [[ $(uname -o) == "Darwin" ]]; then
-  LC_ALL=en_US.UTF-8
-  LANG=en_US
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US
 fi
 
 # Setup homebrew
@@ -49,7 +49,7 @@ fi
 
 # Set up our favorite editor
 if (( $+commands[nvim] )); then
-  EDITOR=nvim
+  export EDITOR=nvim
   alias vim=nvim
 fi
 

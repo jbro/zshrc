@@ -10,9 +10,9 @@ ZINIT[HOME_DIR]=~/.config/zsh/zinit
 source "${ZINIT[BIN_DIR]}/zinit.zsh"
 
 # Set up history
-export HISTFILE=${HOME}/.zhistory
-export HISTSIZE=10000
-export SAVEHIST=10000
+HISTFILE=${HOME}/.zhistory
+HISTSIZE=10000
+SAVEHIST=10000
 setopt SHARE_HISTORY
 setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_SPACE
@@ -37,19 +37,19 @@ setopt INTERACTIVE_COMMENTS
 
 # Various Mac fixes
 if [[ $(uname -o) == "Darwin" ]]; then
-  export LC_ALL=en_US.UTF-8
-  export LANG=en_US
+  LC_ALL=en_US.UTF-8
+  LANG=en_US
 fi
 
 # Setup homebrew
 if [[ -f /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
-  export PATH=~/.local/bin:$PATH
+  PATH=~/.local/bin:$PATH
 fi
 
 # Set up our favorite editor
 if (( $+commands[nvim] )); then
-  export EDITOR=nvim
+  EDITOR=nvim
   alias vim=nvim
 fi
 
@@ -66,7 +66,7 @@ fi
 
 # Set up quick cd'ing to project dirs
 if [[ -d ~/Projects ]]; then
-  cdpath=($cdpath ~/Projects)
+  cdpath+=(~/Projects)
 fi
 
 # Apply gruvbox dark theme to ls and friends (generated with: vivid generate gruvbox-dark)

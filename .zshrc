@@ -69,6 +69,10 @@ if [[ -d ~/Projects ]]; then
   cdpath+=(~/Projects)
 fi
 
+for d in ~/local/*/bin; do
+  PATH+=:$d
+done
+
 # Apply gruvbox dark theme to ls and friends (generated with: vivid generate gruvbox-dark)
 LS_COLORS=$(<~/.config/zsh/lscolors-gruvbox)
 

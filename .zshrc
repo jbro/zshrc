@@ -35,6 +35,9 @@ select-word-style bash
 # can be used to tag commands for easier searching
 setopt INTERACTIVE_COMMENTS
 
+# Change dir without using cd
+setopt AUTOCD
+
 # Various Mac fixes
 if [[ $(uname -o) == "Darwin" ]]; then
   export LC_ALL=en_US.UTF-8

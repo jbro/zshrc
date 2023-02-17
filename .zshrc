@@ -128,7 +128,7 @@ zinit ice wait lucid depth:1
 zinit light olets/zsh-window-title
 
 # Fish like suggestion based completion
-zinit ice wait lucid depth:1
+zinit ice wait lucid depth:1 atload'_zsh_autosuggest_start'
 zinit light zsh-users/zsh-autosuggestions
 
 # Let me know how to get missing commands

@@ -64,6 +64,11 @@ if (( $+commands[trash] )); then
   alias rm=trash
 fi
 
+# Set bat theme
+if (( $+commands[bat] )); then
+  alias bat="bat --theme=gruvbox-dark"
+fi
+
 # Set up quick cd'ing to project dirs
 if [[ -d ~/Projects ]]; then
   cdpath+=~/Projects
@@ -107,6 +112,9 @@ zinit snippet OMZP::aws
 
 # Borrow fzf plugin from Oh my zsh
 zinit ice has fzf
+zinit ice atload'export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --color=bg+:#3c3836,bg:#1d2021,spinner:#8ec07c,hl:#83a598 \
+    --color=fg:#bdae93,header:#83a598,info:#fabd2f,pointer:#8ec07c \
+    --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598"'
 zinit snippet OMZP::fzf
 
 # Load a bunch of additional completions

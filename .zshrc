@@ -1,3 +1,21 @@
+# Setup homebrew
+if [[ -f /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  path+=~/.local/bin
+fi
+
+#
+if (( $+commands[fortune] )); then
+  echo "\033[0;36m$(fortune -e -s)\033[0m\n"
+fi
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Emacs keybindings
 bindkey -e
 
@@ -5,6 +23,7 @@ bindkey -e
 declare -A ZINIT
 ZINIT[BIN_DIR]=~/.config/zsh/zinit/zinit.git
 ZINIT[HOME_DIR]=~/.config/zsh/zinit
+
 # Install zinit if not pressent
 [ -d "${ZINIT[BIN_DIR]}" ] || git clone https://github.com/zdharma-continuum/zinit.git "${ZINIT[BIN_DIR]}"
 source "${ZINIT[BIN_DIR]}/zinit.zsh"
@@ -42,12 +61,6 @@ setopt AUTOCD
 if [[ $(uname -o) == "Darwin" ]]; then
   export LC_ALL=en_US.UTF-8
   export LANG=en_US
-fi
-
-# Setup homebrew
-if [[ -f /opt/homebrew/bin/brew ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-  path+=~/.local/bin
 fi
 
 # Set up our favorite editor
@@ -97,17 +110,12 @@ zstyle ':completion:*:commands' rehash 1
 # Very nice zsh theme
 zinit ice depth:1
 zinit light romkatv/powerlevel10k
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-source ~/.config/zsh/.p10k.zsh
 
 # Setup asdf
 if [[ -f  ~/.asdf/asdf.sh ]]; then
   source ~/.asdf/asdf.sh
   fpath+=${ASDF_DIR}/completions
 fi
-
 
 # Borrow aws plugin from Oh my zsh
 zinit ice wait lucid has:'aws'
@@ -156,8 +164,5 @@ autoload -Uz compinit
 compinit
 zinit cdreplay -q
 
-#
-if (( $+commands[fortune] )); then
-  echo "\033[0;36m$(fortune -e -s)\033[0m\n"
-fi
-
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh

@@ -144,7 +144,7 @@ compinit
 zinit cdreplay -q
 
 #
-if [ "$(tty)" != "/dev/tty1" ]; then
+if (( $+commands[fortune] )); then
   echo "\033[0;36m$(fortune -e -s)\033[0m\n"
 fi
 

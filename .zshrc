@@ -44,7 +44,7 @@ fi
 # Setup homebrew
 if [[ -f /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
-  PATH=~/.local/bin:$PATH
+  path+=~/.local/bin
 fi
 
 # Set up our favorite editor
@@ -66,11 +66,12 @@ fi
 
 # Set up quick cd'ing to project dirs
 if [[ -d ~/Projects ]]; then
-  cdpath+=(~/Projects)
+  cdpath+=~/Projects
 fi
 
+# Add local software to $PATH
 for d in ~/local/*/bin; do
-  PATH+=:$d
+  path+=$d
 done
 
 # Apply gruvbox dark theme to ls and friends (generated with: vivid generate gruvbox-dark)
@@ -96,7 +97,7 @@ source ~/.config/zsh/.p10k.zsh
 # Setup asdf
 if [[ -f  ~/.asdf/asdf.sh ]]; then
   source ~/.asdf/asdf.sh
-  fpath+=( ${ASDF_DIR}/completions)
+  fpath+=${ASDF_DIR}/completions
 fi
 
 

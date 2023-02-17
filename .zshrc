@@ -154,7 +154,8 @@ zinit snippet OMZP::vscode
 
 # Syntax hilight zsh oneliners while typing
 zinit ice depth=1
-zinit light zsh-users/zsh-syntax-highlighting
+zinit ice wait lucid
+zinit light zdharma-continuum/fast-syntax-highlighting
 
 # Enable auto completions, should be one of the last things we do
 autoload -Uz compinit

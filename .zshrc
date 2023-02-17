@@ -93,13 +93,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 source ~/.config/zsh/.p10k.zsh
 
-# XXX hack to make asdf load bash completion
-# Figure out where this goes
-autoload bashcompinit
-bashcompinit
 # Setup asdf
-zinit ice if'[[ -f  ~/.asdf/asdf.sh ]]'
-zinit snippet OMZP::asdf
+if [[ -f  ~/.asdf/asdf.sh ]]; then
+  source ~/.asdf/asdf.sh
+  fpath+=( ${ASDF_DIR}/completions)
+fi
+
 
 # Borrow aws plugin from Oh my zsh
 zinit ice has aws

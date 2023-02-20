@@ -95,7 +95,7 @@ for d in ~/local/*/bin; do
 done
 
 # Apply gruvbox dark theme to ls and friends (generated with: vivid generate gruvbox-dark)
-LS_COLORS=$(<~/.config/zsh/lscolors-gruvbox)
+export LS_COLORS=$(<~/.config/zsh/lscolors-gruvbox)
 
 # Set up completion style like I want it
 zstyle ':completion:*' menu select

@@ -127,12 +127,12 @@ zinit $zload zdharma-continuum/fast-syntax-highlighting
 
 # Terraform completions
 zinit ice wait lucid depth:1 has'terraform'
-zinit ice atinit:'local saved_aliases=$(alias -L)'
-zinit ice atload:'unalias -m "*"; eval $saved_aliases'
+# zinit ice atinit:'local saved_aliases=$(alias -L)'
+# zinit ice atload:'unalias -m "*"; eval $saved_aliases'
 zinit $zload macunha1/zsh-terraform
 
 # Terraform completions
-zinit ice wait lucid depth:1 hass:'terragrunt'
+zinit ice wait lucid depth:1 has:'terragrunt'
 zinit $zload jkavan/terragrunt-oh-my-zsh-plugin
 
 # Set up our favorite editor

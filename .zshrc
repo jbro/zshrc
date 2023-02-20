@@ -79,6 +79,10 @@ zload=load
 zinit ice depth:1
 zinit $zload romkatv/powerlevel10k
 
+# Setup asdf
+zinit ice wait lucid
+zinit snippet OMZP::asdf
+
 # Borrow aws plugin from Oh my zsh
 zinit ice wait lucid has:'aws'
 zinit snippet OMZP::aws
@@ -161,21 +165,16 @@ for d in $quick_paths; do
   fi
 done
 
-# Setup asdf
-if [[ -f  ~/.asdf/asdf.sh ]]; then
-  source ~/.asdf/asdf.sh
-  fpath+=${ASDF_DIR}/completions
-fi
-
 # Add local software to $PATH
 for d in ~/local/*/bin; do
   path+=$d
 done
 
-# Enable auto completions, should be one of the last things we do
+# Enable auto completions
 autoload -Uz compinit
 compinit
-zinit cdreplay -q
+autoload -Uz bashcompinit
+bashcompinit
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh

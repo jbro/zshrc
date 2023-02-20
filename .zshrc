@@ -158,6 +158,14 @@ zinit snippet OMZP::vscode
 zinit ice wait lucid depth:1
 zinit light zdharma-continuum/fast-syntax-highlighting
 
+# Terraform completions
+zinit ice wait lucid depth:1 has'terraform'
+zinit light macunha1/zsh-terraform
+
+# Terraform completions
+zinit ice wait lucid depth:1 hass:'terragrunt'
+zinit light jkavan/terragrunt-oh-my-zsh-plugin
+
 # Enable auto completions, should be one of the last things we do
 autoload -Uz compinit
 compinit

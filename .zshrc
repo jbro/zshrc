@@ -9,6 +9,12 @@ if (( $+commands[fortune] )); then
   echo "\033[0;36m$(fortune -e -s)\033[0m\n"
 fi
 
+# Various Mac fixes
+if [[ $(uname -o) == "Darwin" ]]; then
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US
+fi
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -18,15 +24,6 @@ fi
 
 # Emacs keybindings
 bindkey -e
-
-# Install zinit under .config/zsh
-declare -A ZINIT
-ZINIT[BIN_DIR]=~/.config/zsh/zinit/zinit.git
-ZINIT[HOME_DIR]=~/.config/zsh/zinit
-
-# Install zinit if not pressent
-[ -d "${ZINIT[BIN_DIR]}" ] || git clone https://github.com/zdharma-continuum/zinit.git "${ZINIT[BIN_DIR]}"
-source "${ZINIT[BIN_DIR]}/zinit.zsh"
 
 # Set up history
 HISTFILE=${HOME}/.zhistory
@@ -56,44 +53,6 @@ setopt INTERACTIVE_COMMENTS
 # Change dir without using cd
 setopt AUTOCD
 
-# Various Mac fixes
-if [[ $(uname -o) == "Darwin" ]]; then
-  export LC_ALL=en_US.UTF-8
-  export LANG=en_US
-fi
-
-# Set up our favorite editor
-if (( $+commands[nvim] )); then
-  export EDITOR=nvim
-  alias vim=nvim
-fi
-
-# Use exa as ls
-if (( $+commands[exa] )); then
-  alias ls="exa --classify"
-  alias tree="exa --tree"
-fi
-
-# Delete to trash
-if (( $+commands[trash] )); then
-  alias rm=trash
-fi
-
-# Set bat theme
-if (( $+commands[bat] )); then
-  alias bat="bat --theme=gruvbox-dark"
-fi
-
-# Set up quick cd'ing to project dirs
-if [[ -d ~/Projects ]]; then
-  cdpath+=~/Projects
-fi
-
-# Add local software to $PATH
-for d in ~/local/*/bin; do
-  path+=$d
-done
-
 # Apply gruvbox dark theme to ls and friends (generated with: vivid generate gruvbox-dark)
 export LS_COLORS=$(<~/.config/zsh/lscolors-gruvbox)
 
@@ -105,6 +64,15 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*:commands' rehash 1
+
+# Install zinit under .config/zsh
+declare -A ZINIT
+ZINIT[BIN_DIR]=~/.config/zsh/zinit/zinit.git
+ZINIT[HOME_DIR]=~/.config/zsh/zinit
+
+# Install zinit if not pressent
+[ -d "${ZINIT[BIN_DIR]}" ] || git clone https://github.com/zdharma-continuum/zinit.git "${ZINIT[BIN_DIR]}"
+source "${ZINIT[BIN_DIR]}/zinit.zsh"
 
 # Very nice zsh theme
 zinit ice depth:1
@@ -170,6 +138,38 @@ zinit light jkavan/terragrunt-oh-my-zsh-plugin
 autoload -Uz compinit
 compinit
 zinit cdreplay -q
+
+# Set up our favorite editor
+if (( $+commands[nvim] )); then
+  export EDITOR=nvim
+  alias vim=nvim
+fi
+
+# Use exa as ls
+if (( $+commands[exa] )); then
+  alias ls="exa --classify"
+  alias tree="exa --tree"
+fi
+
+# Delete to trash
+if (( $+commands[trash] )); then
+  alias rm=trash
+fi
+
+# Set bat theme
+if (( $+commands[bat] )); then
+  alias bat="bat --theme=gruvbox-dark"
+fi
+
+# Set up quick cd'ing to project dirs
+if [[ -d ~/Projects ]]; then
+  cdpath+=~/Projects
+fi
+
+# Add local software to $PATH
+for d in ~/local/*/bin; do
+  path+=$d
+done
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh

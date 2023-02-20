@@ -162,9 +162,12 @@ if (( $+commands[bat] )); then
 fi
 
 # Set up quick cd'ing to project dirs
-if [[ -d ~/Projects ]]; then
-  cdpath+=~/Projects
-fi
+quick_paths=(~/Projects)
+for d in $quick_paths; do
+  if [[ -d "$d" ]]; then
+    cdpath+="$d"
+  fi
+done
 
 # Add local software to $PATH
 for d in ~/local/*/bin; do

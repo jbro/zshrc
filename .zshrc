@@ -93,10 +93,6 @@ zinit ice wait lucid has:'fzf' atload'export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
     --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598"'
 zinit snippet OMZP::fzf
 
-# Load a bunch of additional completions
-zinit ice wait lucid depth:1 blockf
-zinit $zload zsh-users/zsh-completions
-
 # Set the terminal title
 zinit ice wait lucid depth:1
 zinit $zload olets/zsh-window-title

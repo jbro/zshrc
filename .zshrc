@@ -73,10 +73,11 @@ ZINIT[HOME_DIR]=~/.config/zsh/zinit
 # Install zinit if not pressent
 [ -d "${ZINIT[BIN_DIR]}" ] || git clone https://github.com/zdharma-continuum/zinit.git "${ZINIT[BIN_DIR]}"
 source "${ZINIT[BIN_DIR]}/zinit.zsh"
+zload=load
 
 # Very nice zsh theme
 zinit ice depth:1
-zinit light romkatv/powerlevel10k
+zinit $zload romkatv/powerlevel10k
 
 # Borrow aws plugin from Oh my zsh
 zinit ice wait lucid has:'aws'
@@ -90,15 +91,15 @@ zinit snippet OMZP::fzf
 
 # Load a bunch of additional completions
 zinit ice wait lucid depth:1 blockf
-zinit light zsh-users/zsh-completions
+zinit $zload zsh-users/zsh-completions
 
 # Set the terminal title
 zinit ice wait lucid depth:1
-zinit light olets/zsh-window-title
+zinit $zload olets/zsh-window-title
 
 # Fish like suggestion based completion
-zinit ice wait lucid depth:1 atload'_zsh_autosuggest_start'
-zinit light zsh-users/zsh-autosuggestions
+zinit ice wait lucid depth:1 atload'_zsh_autosuggest_start' # atload, to make availiable in first prompt
+zinit $zload zsh-users/zsh-autosuggestions
 
 # Let me know how to get missing commands
 zinit ice wait lucid
@@ -116,17 +117,19 @@ zinit snippet OMZP::sudo
 zinit ice wait lucid has:'code'
 zinit snippet OMZP::vscode
 
-# Syntax hilight zsh oneliners while typing
+# Syntax $zload zsh oneliners while typing
 zinit ice wait lucid depth:1
-zinit light zdharma-continuum/fast-syntax-highlighting
+zinit $zload zdharma-continuum/fast-syntax-highlighting
 
 # Terraform completions
 zinit ice wait lucid depth:1 has'terraform'
-zinit light macunha1/zsh-terraform
+zinit ice atinit:'local saved_aliases=$(alias -L)'
+zinit ice atload:'unalias -m "*"; eval $saved_aliases'
+zinit $zload macunha1/zsh-terraform
 
 # Terraform completions
 zinit ice wait lucid depth:1 hass:'terragrunt'
-zinit light jkavan/terragrunt-oh-my-zsh-plugin
+zinit $zload jkavan/terragrunt-oh-my-zsh-plugin
 
 # Set up our favorite editor
 if (( $+commands[nvim] )); then

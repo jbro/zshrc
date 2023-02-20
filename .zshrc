@@ -47,8 +47,7 @@ bindkey "^[[B" down-line-or-beginning-search # Down
 
 # Use directory delimiter as word delimiter,
 # useful when using fish style completion
-autoload -U select-word-style
-select-word-style bash
+WORDCHARS=${WORDCHARS/\/}
 
 # Allow comments on the commandline,
 # can be used to tag commands for easier searching

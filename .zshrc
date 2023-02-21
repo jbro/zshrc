@@ -114,14 +114,6 @@ zinit ice wait lucid has:'fzf' atload'export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
     --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598"'
 zinit snippet OMZP::fzf
 
-# Aliases to open files in VSCode
-zinit ice wait lucid has:'code' noalias
-zinit snippet OMZP::vscode
-
-# Easy open folders in forklift
-zinit ice wait lucid if'[[ -d /Applications/ForkLift.app ]]'
-zinit snippet OMZP::forklift
-
 # Borrow aws plugin from Oh my zsh
 zinit ice wait lucid has:'aws'
 zinit snippet OMZP::aws

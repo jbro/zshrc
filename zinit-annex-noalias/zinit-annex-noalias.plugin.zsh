@@ -3,6 +3,8 @@
 0="${ZERO:-${${0:#$ZSH_ARGZERO}:-${(%):-%N}}}"
 0="${${(M)0:#/*}:-$PWD/$0}"
 
+zinit_annex_noalias_alias="${functions[:zinit-tmp-subst-alias]}"
+
 zinit-annex-noalias-help() { : }
 
 zinit-annex-noalias() {
@@ -13,9 +15,11 @@ zinit-annex-noalias() {
     local hook="$5" # type: snippet
 
   if [[ $hook = atinit ]]; then
+    functions[:zinit-tmp-subst-alias]='() { : } "$@";'
     alias () { : }
   else
     unset -f alias
+    functions[:zinit-tmp-subst-alias]="$zinit_annex_noalias_alias"
   fi
 }
 

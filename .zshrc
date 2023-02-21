@@ -83,16 +83,6 @@ zinit $zload romkatv/powerlevel10k
 zinit ice wait lucid
 zinit snippet OMZP::asdf
 
-# Borrow aws plugin from Oh my zsh
-zinit ice wait lucid has:'aws'
-zinit snippet OMZP::aws
-
-# Borrow fzf plugin from Oh my zsh
-zinit ice wait lucid has:'fzf' atload'export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --color=bg+:#3c3836,bg:#1d2021,spinner:#8ec07c,hl:#83a598 \
-    --color=fg:#bdae93,header:#83a598,info:#fabd2f,pointer:#8ec07c \
-    --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598"'
-zinit snippet OMZP::fzf
-
 # Set the terminal title
 zinit ice wait lucid depth:1
 zinit $zload olets/zsh-window-title
@@ -105,21 +95,31 @@ zinit $zload zsh-users/zsh-autosuggestions
 zinit ice wait lucid
 zinit snippet OMZP::command-not-found
 
-# Easy open folders in forklift
-zinit ice wait lucid if'[[ -d /Applications/ForkLift.app ]]'
-zinit snippet OMZP::forklift
+# Syntax $zload zsh oneliners while typing
+zinit ice wait lucid depth:1
+zinit $zload zdharma-continuum/fast-syntax-highlighting
 
 # Super easy sudo prefixing
 zinit ice wait lucid
 zinit snippet OMZP::sudo
 
+# Borrow fzf plugin from Oh my zsh
+zinit ice wait lucid has:'fzf' atload'export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --color=bg+:#3c3836,bg:#1d2021,spinner:#8ec07c,hl:#83a598 \
+    --color=fg:#bdae93,header:#83a598,info:#fabd2f,pointer:#8ec07c \
+    --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598"'
+zinit snippet OMZP::fzf
+
 # Aliases to open files in VSCode
 zinit ice wait lucid has:'code'
 zinit snippet OMZP::vscode
 
-# Syntax $zload zsh oneliners while typing
-zinit ice wait lucid depth:1
-zinit $zload zdharma-continuum/fast-syntax-highlighting
+# Easy open folders in forklift
+zinit ice wait lucid if'[[ -d /Applications/ForkLift.app ]]'
+zinit snippet OMZP::forklift
+
+# Borrow aws plugin from Oh my zsh
+zinit ice wait lucid has:'aws'
+zinit snippet OMZP::aws
 
 # Terraform completions
 zinit ice wait lucid depth:1 has'terraform'
@@ -130,6 +130,14 @@ zinit $zload macunha1/zsh-terraform
 # Terraform completions
 zinit ice wait lucid depth:1 has:'terragrunt'
 zinit $zload jkavan/terragrunt-oh-my-zsh-plugin
+
+# Auto completion section, should be the last so we don't override pluging specific completions
+zinit ice wait lucid depth:1
+zinit $zload zsh-users/zsh-completions
+zinit ice wait lucid depth:1 atinit='ZSH_BASH_COMPLETIONS_FALLBACK_LAZYLOAD_DISABLE=true'
+zinit $zload 3v1n0/zsh-bash-completions-fallback
+autoload -Uz compinit && compinit
+autoload -Uz bashcompinit && bashcompinit
 
 # Set up our favorite editor
 if (( $+commands[nvim] )); then
@@ -165,12 +173,6 @@ done
 for d in ~/local/*/bin; do
   path+=$d
 done
-
-# Enable auto completions
-autoload -Uz compinit
-compinit
-autoload -Uz bashcompinit
-bashcompinit
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh

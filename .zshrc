@@ -100,7 +100,7 @@ zinit $zload zsh-users/zsh-autosuggestions
 zinit ice wait lucid
 zinit snippet OMZP::command-not-found
 
-# Syntax $zload zsh oneliners while typing
+# Syntax highlight zsh one liners while typing
 zinit ice wait lucid depth:1 noalias
 zinit $zload zdharma-continuum/fast-syntax-highlighting
 

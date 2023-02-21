@@ -17,11 +17,10 @@ zinit-annex-noalias() {
     local id="$2" hook="$5" # type: snippet
 
   if [[ $hook = atinit ]]; then
-    functions[alias]='() {:} "$@";'
+    alias () { : }
   else
-    functions[alias]=':zinit-tmp-subst-alias "$@";'
+    unset -f alias
   fi
-
 }
 
 @zinit-register-annex "zinit-annex-noalias" hook:atinit-80 \

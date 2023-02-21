@@ -73,7 +73,12 @@ ZINIT[HOME_DIR]=~/.config/zsh/zinit
 # Install zinit if not pressent
 [ -d "${ZINIT[BIN_DIR]}" ] || git clone https://github.com/zdharma-continuum/zinit.git "${ZINIT[BIN_DIR]}"
 source "${ZINIT[BIN_DIR]}/zinit.zsh"
-zload=load
+
+# Quick light/load change
+zload=light
+
+# load local zinit annex that can disable alias loading in zinit plugins
+zinit $zload $ZDOTDIR/zinit-annex-noalias
 
 # Very nice zsh theme
 zinit ice depth:1
@@ -96,7 +101,7 @@ zinit ice wait lucid
 zinit snippet OMZP::command-not-found
 
 # Syntax $zload zsh oneliners while typing
-zinit ice wait lucid depth:1
+zinit ice wait lucid depth:1 noalias
 zinit $zload zdharma-continuum/fast-syntax-highlighting
 
 # Super easy sudo prefixing
@@ -110,7 +115,7 @@ zinit ice wait lucid has:'fzf' atload'export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
 zinit snippet OMZP::fzf
 
 # Aliases to open files in VSCode
-zinit ice wait lucid has:'code'
+zinit ice wait lucid has:'code' noalias
 zinit snippet OMZP::vscode
 
 # Easy open folders in forklift
@@ -122,13 +127,11 @@ zinit ice wait lucid has:'aws'
 zinit snippet OMZP::aws
 
 # Terraform completions
-zinit ice wait lucid depth:1 has'terraform'
-# zinit ice atinit:'local saved_aliases=$(alias -L)'
-# zinit ice atload:'unalias -m "*"; eval $saved_aliases'
-zinit $zload macunha1/zsh-terraform
+zinit ice wait lucid depth:1 has'terraform' noalias
+zinit snippet OMZP::terraform
 
 # Terraform completions
-zinit ice wait lucid depth:1 has:'terragrunt'
+zinit ice wait lucid depth:1 has:'terragrunt' noalias
 zinit $zload jkavan/terragrunt-oh-my-zsh-plugin
 
 # Auto completion section, should be the last so we don't override pluging specific completions

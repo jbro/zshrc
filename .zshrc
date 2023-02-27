@@ -165,9 +165,13 @@ for d in $quick_paths; do
 done
 
 # Add local software to $PATH
-for d in ~/local/*/bin; do
-  path+=$d
-done
+if [[ -d "~/local" ]]; then
+  uname_system="$(uname -s)"
+  for d in ~/local/*; do
+    [[ -d "$d/bin" ]] && path+="$d/bin"
+    [[ -d "$d/bin-$uname_system" ]] && path+="$d/bin-$uname_system"
+  done
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh

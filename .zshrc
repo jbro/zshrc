@@ -118,14 +118,6 @@ zinit snippet OMZP::fzf
 zinit ice wait lucid has:'aws'
 zinit snippet OMZP::aws
 
-# Terraform completions
-zinit ice wait lucid depth:1 has'terraform' noalias
-zinit snippet OMZP::terraform
-
-# Terraform completions
-zinit ice wait lucid depth:1 has:'terragrunt' noalias
-zinit $zload jkavan/terragrunt-oh-my-zsh-plugin
-
 # Auto completion section, should be the last so we don't override pluging specific completions
 zinit ice blockf atpull:'zinit creinstall -q .' atload:'zicompinit; zicdreplay' wait lucid depth:1
 zinit $zload clarketm/zsh-completions

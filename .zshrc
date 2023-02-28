@@ -127,12 +127,10 @@ zinit ice wait lucid depth:1 has:'terragrunt' noalias
 zinit $zload jkavan/terragrunt-oh-my-zsh-plugin
 
 # Auto completion section, should be the last so we don't override pluging specific completions
-zinit ice wait lucid depth:1
-zinit $zload zsh-users/zsh-completions
-zinit ice wait lucid depth:1 atinit='ZSH_BASH_COMPLETIONS_FALLBACK_LAZYLOAD_DISABLE=true'
+zinit ice blockf atpull:'zinit creinstall -q .' atload:'zicompinit; zicdreplay' wait lucid depth:1
+zinit $zload clarketm/zsh-completions
+zinit ice wait lucid depth:1 atinit:'ZSH_BASH_COMPLETIONS_FALLBACK_LAZYLOAD_DISABLE=true'
 zinit $zload 3v1n0/zsh-bash-completions-fallback
-autoload -Uz compinit && compinit
-autoload -Uz bashcompinit && bashcompinit
 
 # Set up our favorite editor
 if (( $+commands[nvim] )); then

@@ -92,7 +92,6 @@ zinit $zload olets/zsh-window-title
 zinit ice wait lucid depth:1 atload'WORDCHARS=${WORDCHARS/\/}; _zsh_autosuggest_start' # atload, make availiable in first prompt and use / as word delimiter
 zinit $zload zsh-users/zsh-autosuggestions
 
-
 # Let me know how to get missing commands
 zinit ice wait lucid
 zinit snippet OMZP::command-not-found

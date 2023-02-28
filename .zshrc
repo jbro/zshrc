@@ -165,7 +165,7 @@ for d in $quick_paths; do
 done
 
 # Add local software to $PATH
-if [[ -d "~/local" ]]; then
+if [[ -d ~/local ]]; then
   uname_system="$(uname -s)"
   for d in ~/local/*; do
     [[ -d "$d/bin" ]] && path+="$d/bin"

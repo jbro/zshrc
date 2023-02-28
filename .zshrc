@@ -84,9 +84,9 @@ zinit $zload $ZDOTDIR/zinit-annex-noalias
 zinit ice depth:1
 zinit $zload romkatv/powerlevel10k
 
-# Setup asdf
-zinit ice wait lucid
-zinit snippet OMZP::asdf
+# Setup asdf and direnv
+zinit ice wait lucid depth:1
+zinit load redxtech/zsh-asdf-direnv
 
 # Set the terminal title
 zinit ice wait lucid depth:1

@@ -117,8 +117,6 @@ zinit snippet OMZP::aws
 # Auto completion section, should be the last so we don't override pluging specific completions
 zinit ice blockf atpull:'zinit creinstall -q .' atload:'zicompinit; zicdreplay' wait lucid depth:1
 zinit $zload clarketm/zsh-completions
-zinit ice wait lucid depth:1 atinit:'ZSH_BASH_COMPLETIONS_FALLBACK_LAZYLOAD_DISABLE=true'
-zinit $zload 3v1n0/zsh-bash-completions-fallback
 
 # Set up our favorite editor
 if (( $+commands[nvim] )); then

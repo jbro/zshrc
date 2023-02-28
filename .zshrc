@@ -67,11 +67,14 @@ ZINIT[BIN_DIR]=~/.config/zsh/zinit/zinit.git
 ZINIT[HOME_DIR]=~/.config/zsh/zinit
 
 # Install zinit if not pressent
-[ -d "${ZINIT[BIN_DIR]}" ] || git clone https://github.com/zdharma-continuum/zinit.git "${ZINIT[BIN_DIR]}"
+[ -d "${ZINIT[BIN_DIR]}" ] \
+  || git clone https://github.com/zdharma-continuum/zinit.git "${ZINIT[BIN_DIR]}"
 source "${ZINIT[BIN_DIR]}/zinit.zsh"
 
 # Quick light/load change
 zload=light
+# Default ice
+deice=(ice wait lucid depth:1)
 
 # load local zinit annex that can disable alias loading in zinit plugins
 zinit $zload $ZDOTDIR/zinit-annex-noalias
@@ -81,41 +84,51 @@ zinit ice depth:1
 zinit $zload romkatv/powerlevel10k
 
 # Setup asdf and direnv
-zinit ice wait lucid depth:1
-zinit load redxtech/zsh-asdf-direnv
+zinit $deice
+zinit $zload redxtech/zsh-asdf-direnv
 
 # Set the terminal title
-zinit ice wait lucid depth:1
+zinit $deice
 zinit $zload olets/zsh-window-title
 
 # Fish like suggestion based completion
-zinit ice wait lucid depth:1 atload'WORDCHARS=${WORDCHARS/\/}; _zsh_autosuggest_start' # atload, make availiable in first prompt and use / as word delimiter
+# atload, make availiable in first prompt and use / as word delimiter
+zinit $deice \
+  atload'WORDCHARS=${WORDCHARS/\/}; _zsh_autosuggest_start'
 zinit $zload zsh-users/zsh-autosuggestions
 
 # Let me know how to get missing commands
-zinit ice wait lucid
+zinit $deice
 zinit snippet OMZP::command-not-found
 
 # Syntax highlight zsh one liners while typing
-zinit ice wait lucid depth:1 noalias
+zinit $deice \
+  noalias
 zinit $zload zdharma-continuum/fast-syntax-highlighting
 
 # Super easy sudo prefixing
-zinit ice wait lucid
+zinit $deice
 zinit snippet OMZP::sudo
 
 # Borrow fzf plugin from Oh my zsh
-zinit ice wait lucid has:'fzf' atload'export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --color=bg+:#3c3836,bg:#1d2021,spinner:#8ec07c,hl:#83a598 \
+zinit $deice \
+  has:'fzf' \
+  atload'export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
+    --color=bg+:#3c3836,bg:#1d2021,spinner:#8ec07c,hl:#83a598 \
     --color=fg:#bdae93,header:#83a598,info:#fabd2f,pointer:#8ec07c \
     --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598"'
 zinit snippet OMZP::fzf
 
 # Borrow aws plugin from Oh my zsh
-zinit ice wait lucid has:'aws'
+zinit $deice \
+  has:'aws'
 zinit snippet OMZP::aws
 
 # Auto completion section, should be the last so we don't override pluging specific completions
-zinit ice blockf atpull:'zinit creinstall -q .' atload:'zicompinit; zicdreplay' wait lucid depth:1
+zinit $deice \
+  blockf \
+  atpull:'zinit creinstall -q .' \
+  atload:'zicompinit; zicdreplay'
 zinit $zload clarketm/zsh-completions
 
 # Set up our favorite editor

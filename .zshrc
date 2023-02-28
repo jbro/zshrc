@@ -42,10 +42,6 @@ zle -N down-line-or-beginning-search
 bindkey "^[[A" up-line-or-beginning-search # Up
 bindkey "^[[B" down-line-or-beginning-search # Down
 
-# Use directory delimiter as word delimiter,
-# useful when using fish style completion
-WORDCHARS=${WORDCHARS/\/}
-
 # Allow comments on the commandline,
 # can be used to tag commands for easier searching
 setopt INTERACTIVE_COMMENTS
@@ -93,8 +89,9 @@ zinit ice wait lucid depth:1
 zinit $zload olets/zsh-window-title
 
 # Fish like suggestion based completion
-zinit ice wait lucid depth:1 atload'_zsh_autosuggest_start' # atload, to make availiable in first prompt
+zinit ice wait lucid depth:1 atload'WORDCHARS=${WORDCHARS/\/}; _zsh_autosuggest_start' # atload, make availiable in first prompt and use / as word delimiter
 zinit $zload zsh-users/zsh-autosuggestions
+
 
 # Let me know how to get missing commands
 zinit ice wait lucid

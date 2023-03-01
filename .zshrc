@@ -91,6 +91,11 @@ zinit $zload redxtech/zsh-asdf-direnv
 zinit $deice
 zinit $zload olets/zsh-window-title
 
+# Syntax highlight zsh one liners while typing
+zinit $deice \
+  noalias
+zinit $zload zdharma-continuum/fast-syntax-highlighting
+
 # Fish like suggestion based completion
 # atload, make availiable in first prompt and use / as word delimiter
 zinit $deice \
@@ -100,11 +105,6 @@ zinit $zload zsh-users/zsh-autosuggestions
 # Let me know how to get missing commands
 zinit $deice
 zinit snippet OMZP::command-not-found
-
-# Syntax highlight zsh one liners while typing
-zinit $deice \
-  noalias
-zinit $zload zdharma-continuum/fast-syntax-highlighting
 
 # Super easy sudo prefixing
 zinit $deice

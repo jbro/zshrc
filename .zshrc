@@ -124,11 +124,9 @@ zinit $deice \
   has:'aws'
 zinit snippet OMZP::aws
 
-# Auto completion section, should be the last so we don't override pluging specific completions
+# Auto completions, should be the last plugin as it runs compinit
 zinit $deice \
-  blockf \
-  atpull:'zinit creinstall -q .' \
-  atload:'zicompinit; zicdreplay'
+  atload:'zicompinit'
 zinit $zload clarketm/zsh-completions
 
 # Set up our favorite editor

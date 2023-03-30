@@ -99,7 +99,7 @@ zinit $zload zdharma-continuum/fast-syntax-highlighting
 # Fish like suggestion based completion
 # atload use / as word delimiter
 zinit $deice \
-  atload'WORDCHARS=${WORDCHARS/\/}'
+  atload'WORDCHARS=${WORDCHARS/\-/}'
 zinit $zload zsh-users/zsh-autosuggestions
 
 # Let me know how to get missing commands

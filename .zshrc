@@ -97,9 +97,9 @@ zinit $deice \
 zinit $zload zdharma-continuum/fast-syntax-highlighting
 
 # Fish like suggestion based completion
-# atload, make availiable in first prompt and use / as word delimiter
+# atload use / as word delimiter
 zinit $deice \
-  atload'WORDCHARS=${WORDCHARS/\/}; _zsh_autosuggest_start'
+  atload'WORDCHARS=${WORDCHARS/\/}'
 zinit $zload zsh-users/zsh-autosuggestions
 
 # Let me know how to get missing commands
@@ -124,9 +124,11 @@ zinit $deice \
   has:'aws'
 zinit snippet OMZP::aws
 
-# Auto completions, should be the last plugin as it runs compinit
+# Auto completions, should be the last plugin as it runs compinit,
+# and enables fish like completion on the first prompt without
+# conflicting with other widgets, like the syntax highlighter
 zinit $deice \
-  atload:'zicompinit'
+  atload:'zicompinit; _zsh_autosuggest_start'
 zinit $zload clarketm/zsh-completions
 
 # Set up our favorite editor

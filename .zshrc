@@ -97,7 +97,7 @@ zinit $deice \
 zinit $zload zdharma-continuum/fast-syntax-highlighting
 
 # Fish like suggestion based completion
-# atload use / as word delimiter
+# atload use `/ `and `-` as word delimiters
 zinit $deice \
   atload'WORDCHARS=${WORDCHARS/\-/}'
 zinit $zload zsh-users/zsh-autosuggestions

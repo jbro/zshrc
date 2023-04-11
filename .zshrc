@@ -179,5 +179,6 @@ if [[ -f ~/.config/zsh/.p10k.zsh ]]; then
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=0
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=3
   typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=always
+  typeset -g POWERLEVEL9K_TERM_SHELL_INTEGRATION=true
   p10k reload
 fi

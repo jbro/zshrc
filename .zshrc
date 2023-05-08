@@ -180,6 +180,6 @@ if [[ -f ~/.config/zsh/.p10k.zsh ]]; then
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=3
   typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=always
   typeset -g POWERLEVEL9K_TERM_SHELL_INTEGRATION=true
-  typeset -g POWERLEVEL9K_MODE=nerdfont-v3
+  typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%H:%M:%S}'
   p10k reload
 fi

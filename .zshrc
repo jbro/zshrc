@@ -153,6 +153,11 @@ if (( $+commands[bat] )); then
   alias bat="bat --theme=gruvbox-dark"
 fi
 
+if (( $+commands[gron] )); then
+  alias norg="gron --ungron"
+  alias ungron="gron --ungron"
+fi
+
 # Set up quick cd'ing to project dirs
 quick_paths=(~/Projects)
 for d in $quick_paths; do

@@ -34,14 +34,6 @@ setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_SPACE
 setopt HIST_IGNORE_ALL_DUPS
 
-# When pressing up limit history to prefix
-autoload -U up-line-or-beginning-search
-autoload -U down-line-or-beginning-search
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-search
-bindkey "^[[A" up-line-or-beginning-search # Up
-bindkey "^[[B" down-line-or-beginning-search # Down
-
 # Allow comments on the commandline,
 # can be used to tag commands for easier searching
 setopt INTERACTIVE_COMMENTS
@@ -51,15 +43,6 @@ setopt AUTOCD
 
 # Apply gruvbox dark theme to ls and friends (generated with: vivid generate gruvbox-dark)
 export LS_COLORS=$(<~/.config/zsh/lscolors-gruvbox)
-
-# Set up completion style like I want it
-zstyle ':completion:*' menu select
-zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' squeeze-slashes true
-zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
-zstyle ':completion:*:commands' rehash 1
 
 # Install zinit under .config/zsh
 declare -A ZINIT
@@ -97,10 +80,15 @@ zinit $deice \
 zinit $zload zdharma-continuum/fast-syntax-highlighting
 
 # Fish like suggestion based completion
-# atload use `/ `and `-` as word delimiters
+# atload, all special characters are considered word boundaries
 zinit $deice \
-  atload'WORDCHARS=${WORDCHARS/\-/}'
+  atload'WORDCHARS=""'
 zinit $zload zsh-users/zsh-autosuggestions
+
+zinit $deice \
+  atload'zstyle ":completion:*:*:*:*:descriptions" format "%F{green}-- %d --%f"; \
+         zstyle ":completion:*:default" list-colors ${(s.:.)LS_COLORS}'
+zinit $zload marlonrichert/zsh-autocomplete
 
 # Let me know how to get missing commands
 zinit $deice

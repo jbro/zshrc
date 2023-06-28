@@ -32,13 +32,6 @@ if [ -d ~/.asdf ]; then
 fi
 
 # Plugin manager light
-# TODO
-# - PMSPEC
-#    - support function directory
-#      -https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html
-# - update plugins function
-# - better name that we can keep around?
-# - clean up based on $zsh_loaded_plugins
 zsh_loaded_plugins=()
 zsh_loaded_snippets=()
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/plugins}
@@ -75,6 +68,14 @@ function plugin {
   else
     source "$plugindir/$initfile"
   fi
+}
+
+function update_zsh_plugins {
+  for r in $ZPLUGINDIR/*/*; do
+    echo Updating ${r:t2}
+    (cd $r && git pull)
+    echo
+  done
 }
 
 # Emacs keybindings

@@ -109,10 +109,6 @@ zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 plugin url='https://github.com/marlonrichert/zsh-autocomplete.git'
 
-# Borrow aws plugin from oh-my-zsh
-plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
-       subdir='plugins/aws'
-
 # Fish like suggestion based completion
 WORDCHARS="" # All special characters are now word boundaries for alt+right-arrow
 plugin url='https://github.com/zsh-users/zsh-autosuggestions.git'
@@ -131,6 +127,10 @@ plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
 plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
        subdir='plugins/sudo'
 
+# Borrow aws plugin from oh-my-zsh
+plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
+       subdir='plugins/aws'
+
 # Borrow fzf plugin from Oh my zsh
 if (( $+commands[fzf] )); then
 export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
@@ -141,7 +141,7 @@ plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
        subdir='plugins/fzf'
 fi
 
-# Auto completions
+# Auto completions (Put plugins with completions we want to use below this)
 plugin url='https://github.com/clarketm/zsh-completions.git'
 
 # Done loading plugins, so we no longer need the plugin function

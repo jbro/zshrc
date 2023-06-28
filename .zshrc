@@ -1,3 +1,5 @@
+zmodload zsh/datetime
+_zshrc_bench_start=$EPOCHREALTIME
 # Setup homebrew
 if [[ -f /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -183,3 +185,10 @@ if [[ -f ${ZDOTDIR}/.p10k.zsh ]]; then
   typeset -g POWERLEVEL9K_TERM_SHELL_INTEGRATION=true
   p10k reload
 fi
+
+_zshrc_bench_done=$EPOCHREALTIME
+_zshrc_bench_time_to_prompt=$((_zshrc_bench_prompt - _zshrc_bench_start))
+_zshrc_bench_time_to_load=$((_zshrc_bench_done - _zshrc_bench_start))
+unset _zshrc_bench_start
+unset _zshrc_bench_prompt
+unset _zshrc_bench_done

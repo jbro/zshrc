@@ -23,28 +23,7 @@ fi
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
-# Emacs keybindings
-bindkey -e
-
-# Set up history
-HISTFILE=${HOME}/.zhistory
-HISTSIZE=10000
-SAVEHIST=10000
-setopt SHARE_HISTORY
-setopt EXTENDED_HISTORY
-setopt HIST_IGNORE_SPACE
-setopt HIST_IGNORE_ALL_DUPS
-
-# Allow comments on the commandline,
-# can be used to tag commands for easier searching
-setopt INTERACTIVE_COMMENTS
-
-# Change dir without using cd
-setopt AUTOCD
-
-# Apply gruvbox dark theme to ls and friends (generated with: vivid generate gruvbox-dark)
-export LS_COLORS=$(<~/.config/zsh/lscolors-gruvbox)
+_zshrc_bench_prompt=$EPOCHREALTIME
 
 # Plugin manager light
 zsh_loaded_plugins=()

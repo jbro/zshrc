@@ -25,6 +25,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 _zshrc_bench_prompt=$EPOCHREALTIME
 
+# asdf
+if [ -d ~/.asdf ]; then
+  source ~/.asdf/asdf.sh
+  fpath=(${ASDF_DIR}/completions $fpath)
+fi
+
 # Plugin manager light
 # TODO
 # - PMSPEC
@@ -64,8 +70,8 @@ function plugin {
 
   if [ -z "$initfile" ]; then
     # Assume zsh plugin standard
-    fpath+="$plugindir"
-    source "$plugindir/${plugindir:t}.plugin.zsh"
+    fpath=("$plugindir" $fpath)
+    source $plugindir/*.plugin.zsh([1,1])
   else
     source "$plugindir/$initfile"
   fi
@@ -100,25 +106,21 @@ plugin url='https://github.com/romkatv/powerlevel10k.git' \
 # Show completions as we type
 zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':autocomplete:*complete*:*' insert-unambiguous yes
 plugin url='https://github.com/marlonrichert/zsh-autocomplete.git'
 
-# Auto completions
-plugin url='https://github.com/clarketm/zsh-completions.git'
+# Borrow aws plugin from oh-my-zsh
+plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
+       subdir='plugins/aws'
 
 # Fish like suggestion based completion
 WORDCHARS="" # All special characters are now word boundaries for alt+right-arrow
 plugin url='https://github.com/zsh-users/zsh-autosuggestions.git'
-
-# Setup asdf and direnv
-plugin url='https://github.com/redxtech/zsh-asdf-direnv.git'
 
 # Set the terminal title
 plugin url='https://github.com/olets/zsh-window-title.git'
 
 # Syntax highlight zsh one liners while typing
 plugin url='https://github.com/zdharma-continuum/fast-syntax-highlighting.git'
-
 
 # Let me know how to get missing commands
 plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
@@ -138,11 +140,8 @@ plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
        subdir='plugins/fzf'
 fi
 
-# Borrow aws plugin from Oh my zsh
-if (( $+commands[aws] )); then
-plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
-       subdir='plugins/aws'
-fi
+# Auto completions
+plugin url='https://github.com/clarketm/zsh-completions.git'
 
 # Done loading plugins, so we no longer need the plugin function
 unset -f plugin

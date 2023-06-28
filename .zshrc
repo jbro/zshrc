@@ -71,9 +71,44 @@ function plugin {
   fi
 }
 
+# Emacs keybindings
+bindkey -e
+
+# Set up history
+HISTFILE=${HOME}/.zhistory
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY
+setopt EXTENDED_HISTORY
+setopt HIST_IGNORE_SPACE
+setopt HIST_IGNORE_ALL_DUPS
+
+# Allow comments on the commandline,
+# can be used to tag commands for easier searching
+setopt INTERACTIVE_COMMENTS
+
+# Change dir without using cd
+setopt AUTOCD
+
+# Apply gruvbox dark theme to ls and friends (generated with: vivid generate gruvbox-dark)
+export LS_COLORS=$(<~/.config/zsh/lscolors-gruvbox)
+
 # Very nice zsh theme
 plugin url='https://github.com/romkatv/powerlevel10k.git' \
        initfile='powerlevel10k.zsh-theme'
+
+# Show completions as we type
+zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':autocomplete:*complete*:*' insert-unambiguous yes
+plugin url='https://github.com/marlonrichert/zsh-autocomplete.git'
+
+# Auto completions
+plugin url='https://github.com/clarketm/zsh-completions.git'
+
+# Fish like suggestion based completion
+WORDCHARS="" # All special characters are now word boundaries for alt+right-arrow
+plugin url='https://github.com/zsh-users/zsh-autosuggestions.git'
 
 # Setup asdf and direnv
 plugin url='https://github.com/redxtech/zsh-asdf-direnv.git'
@@ -84,18 +119,6 @@ plugin url='https://github.com/olets/zsh-window-title.git'
 # Syntax highlight zsh one liners while typing
 plugin url='https://github.com/zdharma-continuum/fast-syntax-highlighting.git'
 
-# Auto completions
-plugin url='https://github.com/clarketm/zsh-completions.git'
-
-# Fish like suggestion based completion
-WORDCHARS="" # All special characters are now word boundaries for alt+right-arrow
-plugin url='https://github.com/zsh-users/zsh-autosuggestions.git'
-
-# Show completions as we type
-zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-# zstyle ':autocomplete:*complete*:*' insert-unambiguous yes
-plugin url='https://github.com/marlonrichert/zsh-autocomplete.git'
 
 # Let me know how to get missing commands
 plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \

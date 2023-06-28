@@ -26,7 +26,15 @@ fi
 _zshrc_bench_prompt=$EPOCHREALTIME
 
 # Plugin manager light
+# TODO
+# - PMSPEC
+#    - support function directory
+#      -https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html
+# - update plugins function
+# - better name that we can keep around?
+# - clean up based on $zsh_loaded_plugins
 zsh_loaded_plugins=()
+zsh_loaded_snippets=()
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/plugins}
 function plugin {
   local plugindir url initfile subdir
@@ -36,20 +44,28 @@ function plugin {
 
   plugindir="${ZPLUGINDIR}/${url:t2:r}"
 
-  # Clone plugin if not installed
   if [ ! -d "$plugindir" ]; then
-    git clone -q --recursive --shallow-submodules --depth=1 $url "$plugindir"
+    if [ -z "$subdir" ]; then
+      git clone -q --recursive --shallow-submodules --depth=1 $url "$plugindir"
+    else
+      git clone -q --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
+    fi
   fi
 
   if [ -n "$subdir" ]; then
+    zsh_loaded_snippets+="${plugindir:t2}/${subdir:t}"
+    if [ ! -d  "$plugindir/$subdir" ]; then
+      (cd $plugindir && git sparse-checkout add $subdir && git checkout -q)
+    fi
     plugindir+="/$subdir"
+  else
+    zsh_loaded_plugins+="${plugindir:t2}"
   fi
 
-  zsh_loaded_plugins+="${plugindir:t2:r}"
   if [ -z "$initfile" ]; then
     # Assume zsh plugin standard
     fpath+="$plugindir"
-    source "$plugindir/${plugindir:t:r}.plugin.zsh"
+    source "$plugindir/${plugindir:t}.plugin.zsh"
   else
     source "$plugindir/$initfile"
   fi

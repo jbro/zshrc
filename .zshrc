@@ -109,15 +109,15 @@ zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 plugin url='https://github.com/marlonrichert/zsh-autocomplete.git'
 
+# Syntax highlight zsh one liners while typing
+plugin url='https://github.com/zdharma-continuum/fast-syntax-highlighting.git'
+
 # Fish like suggestion based completion
 WORDCHARS="" # All special characters are now word boundaries for alt+right-arrow
 plugin url='https://github.com/zsh-users/zsh-autosuggestions.git'
 
 # Set the terminal title
 plugin url='https://github.com/olets/zsh-window-title.git'
-
-# Syntax highlight zsh one liners while typing
-plugin url='https://github.com/zdharma-continuum/fast-syntax-highlighting.git'
 
 # Let me know how to get missing commands
 plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \

@@ -100,14 +100,33 @@ setopt AUTOCD
 # Apply gruvbox dark theme to ls and friends (generated with: vivid generate gruvbox-dark)
 export LS_COLORS=$(<~/.config/zsh/lscolors-gruvbox)
 
+# When pressing up limit history to prefix
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search # Up
+bindkey "^[[B" down-line-or-beginning-search # Down
+
+# Set up completion style like I want it
+autoload -U compinit; compinit
+zstyle ':completion:*' completer _extensions _complete _approximate
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$ZDOTDIR/.zcompcache"
+zstyle ':completion:*' menu select
+zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
+zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*:commands' rehash 1
+
 # Very nice zsh theme
 plugin url='https://github.com/romkatv/powerlevel10k.git' \
        initfile='powerlevel10k.zsh-theme'
 
 # Show completions as we type
-zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-plugin url='https://github.com/marlonrichert/zsh-autocomplete.git'
+# plugin url='https://github.com/marlonrichert/zsh-autocomplete.git'
 
 # Syntax highlight zsh one liners while typing
 plugin url='https://github.com/zdharma-continuum/fast-syntax-highlighting.git'

@@ -130,6 +130,16 @@ plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
 # Borrow aws plugin from oh-my-zsh
 plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
        subdir='plugins/aws'
+if (( $+commands[gimme-aws-creds] )); then
+function oasp {
+  local cred_expi=$(strftime -r %FT%H:%M:%S+00:00 $(cat ~/.aws/credentials | grep '^x_security_token_expires' | cut -f2 -d=))
+  if [ $(( cred_expi - EPOCHSECONDS)) -lt 0 ]; then
+    gimme-aws-creds
+  fi
+  asp $@
+}
+compctl -K _aws_profiles oasp
+fi
 
 # Borrow fzf plugin from Oh my zsh
 if (( $+commands[fzf] )); then

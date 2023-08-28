@@ -277,7 +277,7 @@ function _zshrc_bench_report {
 eval "function zshrc_benchmark { echo '$(_zshrc_bench_report)' }"
 
 # Clean up benchmark variables and function
-unset -f _zshrc_bench_report
+unset -f -m "_zshrc_bench_*"
 unset -m "_zshrc_bench_*"
 
 #zprof

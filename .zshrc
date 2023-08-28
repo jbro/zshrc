@@ -118,7 +118,7 @@ bindkey "^[[B" down-line-or-beginning-search # Down
 
 # Optimize completion cache once per day
 autoload -Uz compinit
-setopt extendedglob
+setopt EXTENDEDGLOB
 if [[ ${ZDOTDIR}/.zcompdump(#qN.mh-20) ]]; then
   compinit -C
 else
@@ -126,6 +126,7 @@ else
   touch "${ZDOTDIR}/.zcompdump"
   zcompile "${ZDOTDIR}/.zcompdump"
 fi
+unsetopt EXTENDEDGLOB
 
 # Set up completion style like I want it
 zstyle ':completion:*' completer _extensions _complete _approximate

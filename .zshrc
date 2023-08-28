@@ -251,12 +251,6 @@ if [[ -f ${ZDOTDIR}/.p10k.zsh ]]; then
   p10k reload
 fi
 
-_zshrc_bench_done=$EPOCHREALTIME
-_zshrc_bench_time_to_prompt=$((_zshrc_bench_prompt - _zshrc_bench_start))
-_zshrc_bench_time_to_load=$((_zshrc_bench_done - _zshrc_bench_start))
-unset _zshrc_bench_start
-unset _zshrc_bench_prompt
-unset _zshrc_bench_done
 function _zshrc_bench_print {
   echo "Plugins:"
   for p in $zsh_loaded_plugins; do
@@ -271,5 +265,10 @@ function _zshrc_bench_print {
   printf 'Time to prompt: %6.1f ms\n' $(( $_zshrc_bench_time_to_prompt * 1000 ))
   printf 'Time to load:   %6.1f ms\n'  $(( $_zshrc_bench_time_to_load * 1000 ))
 }
-
+_zshrc_bench_done=$EPOCHREALTIME
+_zshrc_bench_time_to_prompt=$((_zshrc_bench_prompt - _zshrc_bench_start))
+_zshrc_bench_time_to_load=$((_zshrc_bench_done - _zshrc_bench_start))
+unset _zshrc_bench_start
+unset _zshrc_bench_prompt
+unset _zshrc_bench_done
 #zprof

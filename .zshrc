@@ -147,7 +147,7 @@ plugin url='https://github.com/romkatv/powerlevel10k.git' \
 # plugin url='https://github.com/marlonrichert/zsh-autocomplete.git'
 
 # Syntax highlight zsh one liners while typing
-plugin url='https://github.com/zdharma-continuum/fast-syntax-highlighting.git'
+# plugin url='https://github.com/zdharma-continuum/fast-syntax-highlighting.git'
 
 # Fish like suggestion based completion
 WORDCHARS="" # All special characters are now word boundaries for alt+right-arrow

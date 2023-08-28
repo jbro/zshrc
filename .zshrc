@@ -113,8 +113,18 @@ zle -N down-line-or-beginning-search
 bindkey "^[[A" up-line-or-beginning-search # Up
 bindkey "^[[B" down-line-or-beginning-search # Down
 
+# Optimize completion cache once per day
+autoload -Uz compinit
+setopt extendedglob
+if [[ ${ZDOTDIR}/.zcompdump(#qN.mh-20) ]]; then
+  compinit -C
+else
+  compinit
+  touch "${ZDOTDIR}/.zcompdump"
+  zcompile "${ZDOTDIR}/.zcompdump"
+fi
+
 # Set up completion style like I want it
-autoload -U compinit; compinit
 zstyle ':completion:*' completer _extensions _complete _approximate
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "$ZDOTDIR/.zcompcache"

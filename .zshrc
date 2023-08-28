@@ -4,16 +4,17 @@ _zshrc_bench_start=$EPOCHREALTIME
 
 # Setup homebrew
 if [[ -f /opt/homebrew/bin/brew ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
-
-#
-if (( $+commands[fortune] )); then
-  echo "\033[0;36m$(fortune -e -s)\033[0m\n"
+  # Generated with /opt/homebrew/bin/brew shellenv
+  export HOMEBREW_PREFIX="/opt/homebrew";
+  export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+  export HOMEBREW_REPOSITORY="/opt/homebrew";
+  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}";
+  export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:";
+  export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 fi
 
 # Various Mac fixes
-if [[ $(uname -o) == "Darwin" ]]; then
+if [[ $OSTYPE == "darwin"* ]]; then
   export LC_ALL=en_US.UTF-8
   export LANG=en_US
 fi

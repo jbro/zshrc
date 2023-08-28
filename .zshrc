@@ -1,4 +1,5 @@
 #zmodload zsh/zprof
+# Start load benchmarking
 zmodload zsh/datetime
 _zshrc_bench_start=$EPOCHREALTIME
 
@@ -25,6 +26,8 @@ fi
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+
+# Mark in benchmark when prompt appears
 _zshrc_bench_prompt=$EPOCHREALTIME
 
 # asdf
@@ -39,6 +42,7 @@ zsh_loaded_plugins=()
 zsh_loaded_snippets=()
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/plugins}
 function plugin {
+  # Time plugin and snippet loading in benchmarks
   local start_time=$EPOCHREALTIME
   local plugindir url initfile subdir name
   for var in $@; do
@@ -75,6 +79,7 @@ function plugin {
     source "$plugindir/$initfile"
   fi
 
+  # Note how long snippet or plugin took to load for benchmark
   _zshrc_bench_plugins+=( [$name]=$(( $EPOCHREALTIME - $start_time  )) )
 }
 
@@ -246,7 +251,14 @@ if [[ -f ${ZDOTDIR}/.p10k.zsh ]]; then
   p10k reload
 fi
 
-function _zshrc_bench_print {
+# Mark for benchmark when config was done loading
+_zshrc_bench_done=$EPOCHREALTIME
+
+# Helper to generate benchmark report
+function _zshrc_bench_report {
+  local time_to_prompt=$((_zshrc_bench_prompt - _zshrc_bench_start))
+  local time_to_load=$((_zshrc_bench_done - _zshrc_bench_start))
+
   echo "Plugins:"
   for p in $zsh_loaded_plugins; do
     printf "  $p:;%6.1f ms\n" $(( $_zshrc_bench_plugins[$p] * 1000))
@@ -257,13 +269,15 @@ function _zshrc_bench_print {
     printf "  $s:;%6.1f ms\n" $(( $_zshrc_bench_plugins[$s] * 1000))
   done | column -t -c 2 -s ';'
   echo
-  printf 'Time to prompt: %6.1f ms\n' $(( $_zshrc_bench_time_to_prompt * 1000 ))
-  printf 'Time to load:   %6.1f ms\n'  $(( $_zshrc_bench_time_to_load * 1000 ))
+  printf 'Time to prompt: %6.1f ms\n' $(( $time_to_prompt * 1000 ))
+  printf 'Time to load:   %6.1f ms\n'  $(( $time_to_load * 1000 ))
 }
-_zshrc_bench_done=$EPOCHREALTIME
-_zshrc_bench_time_to_prompt=$((_zshrc_bench_prompt - _zshrc_bench_start))
-_zshrc_bench_time_to_load=$((_zshrc_bench_done - _zshrc_bench_start))
-unset _zshrc_bench_start
-unset _zshrc_bench_prompt
-unset _zshrc_bench_done
+
+# Memoize benchmark report
+eval "function zshrc_benchmark { echo '$(_zshrc_bench_report)' }"
+
+# Clean up benchmark variables and function
+unset -f _zshrc_bench_report
+unset -m "_zshrc_bench_*"
+
 #zprof

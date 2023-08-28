@@ -3,7 +3,6 @@ _zshrc_bench_start=$EPOCHREALTIME
 # Setup homebrew
 if [[ -f /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
-  path+=~/.local/bin
 fi
 
 #
@@ -32,11 +31,13 @@ if [ -d ~/.asdf ]; then
 fi
 
 # Plugin manager light
+declare -A _zshrc_bench_plugins
 zsh_loaded_plugins=()
 zsh_loaded_snippets=()
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/plugins}
 function plugin {
-  local plugindir url initfile subdir
+  local start_time=$EPOCHREALTIME
+  local plugindir url initfile subdir name
   for var in $@; do
     eval "$var"
   done
@@ -52,13 +53,15 @@ function plugin {
   fi
 
   if [ -n "$subdir" ]; then
-    zsh_loaded_snippets+="${plugindir:t2}/${subdir:t}"
+    name="${plugindir:t2}/${subdir:t}"
+    zsh_loaded_snippets+="$name"
     if [ ! -d  "$plugindir/$subdir" ]; then
       (cd $plugindir && git sparse-checkout add $subdir && git checkout -q)
     fi
     plugindir+="/$subdir"
   else
-    zsh_loaded_plugins+="${plugindir:t2}"
+    name="${plugindir:t2}"
+    zsh_loaded_plugins+="$name"
   fi
 
   if [ -z "$initfile" ]; then
@@ -68,6 +71,8 @@ function plugin {
   else
     source "$plugindir/$initfile"
   fi
+
+  _zshrc_bench_plugins+=( [$name]=$(( $EPOCHREALTIME - $start_time  )) )
 }
 
 function update_zsh_plugins {
@@ -240,6 +245,16 @@ unset _zshrc_bench_start
 unset _zshrc_bench_prompt
 unset _zshrc_bench_done
 function _zshrc_bench_print {
+  echo "Plugins:"
+  for p in $zsh_loaded_plugins; do
+    printf "  $p:;%6.1f ms\n" $(( $_zshrc_bench_plugins[$p] * 1000))
+  done | column -t -c 2 -s ';'
+  echo
+  echo "Snippets:"
+  for s in $zsh_loaded_snippets; do
+    printf "  $s:;%6.1f ms\n" $(( $_zshrc_bench_plugins[$s] * 1000))
+  done | column -t -c 2 -s ';'
+  echo
   printf 'Time to prompt: %6.1f ms\n' $(( $_zshrc_bench_time_to_prompt * 1000 ))
   printf 'Time to load:   %6.1f ms\n'  $(( $_zshrc_bench_time_to_load * 1000 ))
 }

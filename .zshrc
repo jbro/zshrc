@@ -144,12 +144,6 @@ zstyle ':completion:*:commands' rehash 1
 plugin url='https://github.com/romkatv/powerlevel10k.git' \
        initfile='powerlevel10k.zsh-theme'
 
-# Show completions as we type
-# plugin url='https://github.com/marlonrichert/zsh-autocomplete.git'
-
-# Syntax highlight zsh one liners while typing
-# plugin url='https://github.com/zdharma-continuum/fast-syntax-highlighting.git'
-
 # Fish like suggestion based completion
 WORDCHARS="" # All special characters are now word boundaries for alt+right-arrow
 plugin url='https://github.com/zsh-users/zsh-autosuggestions.git'

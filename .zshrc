@@ -1,5 +1,7 @@
+#zmodload zsh/zprof
 zmodload zsh/datetime
 _zshrc_bench_start=$EPOCHREALTIME
+
 # Setup homebrew
 if [[ -f /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -268,3 +270,5 @@ function _zshrc_bench_print {
   printf 'Time to prompt: %6.1f ms\n' $(( $_zshrc_bench_time_to_prompt * 1000 ))
   printf 'Time to load:   %6.1f ms\n'  $(( $_zshrc_bench_time_to_load * 1000 ))
 }
+
+#zprof

@@ -86,7 +86,7 @@ function plugin {
 function update_zsh_plugins {
   for r in $ZPLUGINDIR/*/*; do
     echo Updating ${r:t2}
-    (cd $r && git pull)
+    (cd $r && git pull && git submodule foreach --recursive git pull)
     echo
   done
 }

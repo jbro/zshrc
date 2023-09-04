@@ -178,6 +178,12 @@ function oasp {
 compctl -K _aws_profiles oasp
 fi
 
+# jq repl
+plugin url='https://github.com/reegnz/jq-zsh-plugin.git'
+
+# enhanced cd
+plugin url='https://github.com/babarot/enhancd.git'
+
 # Borrow fzf plugin from Oh my zsh
 if (( $+commands[fzf] )); then
 export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \

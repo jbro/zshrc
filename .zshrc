@@ -200,6 +200,10 @@ plugin url='https://github.com/clarketm/zsh-completions.git'
 # Done loading plugins, so we no longer need the plugin function
 unset -f plugin
 
+if [[ -d ~/local/zsh/completions ]]; then
+  fpath+=( ~/local/zsh/completions  )
+fi
+
 # Set up our favorite editor
 if (( $+commands[nvim] )); then
   export EDITOR=nvim

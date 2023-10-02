@@ -152,6 +152,8 @@ plugin url='https://github.com/romkatv/powerlevel10k.git' \
 # Fish like suggestion based completion
 WORDCHARS="" # All special characters are now word boundaries for alt+right-arrow
 plugin url='https://github.com/zsh-users/zsh-autosuggestions.git'
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_HISTORY_IGNORE='(cd|ls|vim) *'
 
 # Set the terminal title
 plugin url='https://github.com/olets/zsh-window-title.git'

@@ -44,7 +44,7 @@ ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/plugins}
 function plugin {
   # Time plugin and snippet loading in benchmarks
   local start_time=$EPOCHREALTIME
-  local plugindir url initfile subdir name
+  local plugindir url branch initfile subdir name
   for var in $@; do
     eval "$var"
   done
@@ -53,9 +53,17 @@ function plugin {
 
   if [ ! -d "$plugindir" ]; then
     if [ -z "$subdir" ]; then
-      git clone -q --recursive --shallow-submodules --depth=1 $url "$plugindir"
+      if [ -z "$branch" ]; then
+        git clone -q --recursive --shallow-submodules --depth=1 $url "$plugindir"
+      else
+        git clone -q --branch "$branch" --recursive --shallow-submodules --depth=1 $url "$plugindir"
+      fi
     else
-      git clone -q --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
+      if [ -z "$branch" ]; then
+        git clone -q --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
+      else
+        git clone -q --branch "$branch" --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
+      fi
     fi
   fi
 

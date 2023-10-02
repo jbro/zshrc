@@ -56,13 +56,13 @@ function plugin {
       if [ -z "$branch" ]; then
         git clone -q --recursive --shallow-submodules --depth=1 $url "$plugindir"
       else
-        git clone -q --branch "$branch" --recursive --shallow-submodules --depth=1 $url "$plugindir"
+        git clone -q --branch "$branch" -c advice.detachedHead=false --recursive --shallow-submodules --depth=1 $url "$plugindir"
       fi
     else
       if [ -z "$branch" ]; then
         git clone -q --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
       else
-        git clone -q --branch "$branch" --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
+        git clone -q --branch "$branch" -c advice.detachedHead=false --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
       fi
     fi
   fi

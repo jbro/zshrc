@@ -1,7 +1,7 @@
-.zshenv
 .zhistory
 .zcompdump
 .zcompdump.zwc
 plugins/
 .zcompcache/
 .zsh_sessions/
+local/

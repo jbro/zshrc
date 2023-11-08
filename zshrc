@@ -48,8 +48,7 @@ setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_SPACE
 setopt HIST_IGNORE_ALL_DUPS
 
-# Allow comments on the commandline,
-# can be used to tag commands for easier searching
+# Allow comments on the commandline, can be used to tag commands for easier searching
 setopt INTERACTIVE_COMMENTS
 
 # Change dir without using cd
@@ -93,6 +92,8 @@ zstyle ':completion:*:commands' rehash 1
 # Lazy load helper functions
 fpath=("${ZDOTDIR}/functions" $fpath)
 autoload -Uz $fpath[1]/*(.:t)
+
+# Lazy load local helper function
 if [[ -d "${ZDOTDIR}/local/functions" ]]; then
   fpath=("${ZDOTDIR}/local/functions" $fpath)
   autoload -Uz $fpath[1]/*(.:t)

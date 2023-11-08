@@ -1,0 +1,12 @@
+count=$1
+shift
+if [ -z "$count" ]; then
+  count=24
+fi
+
+alpha=$1
+if [ -z "$alpha" ]; then
+  alpha='[:graph:]'
+fi
+
+LC_ALL=C tr -cd "$alpha" < /dev/urandom | fold -w"$count" | head -n1

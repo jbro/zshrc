@@ -1,0 +1,58 @@
+# Plugin manager light
+if [[ ! -v zsh_loaded_plugins ]]; then
+  typeset -g zsh_loaded_plugins=()
+fi
+if [[ ! -v zsh_loaded_snippets ]]; then
+  typeset -g zsh_loaded_snippets=()
+fi
+if [[ ! -v _zshrc_bench_plugins ]]; then
+  typeset -gA _zshrc_bench_plugins
+fi
+
+# Time plugin and snippet loading in benchmarks
+local start_time=$EPOCHREALTIME
+local plugindir url branch initfile subdir name
+for var in $@; do
+  eval "$var"
+done
+
+plugindir="${ZPLUGINDIR}/${url:t2:r}"
+
+if [ ! -d "$plugindir" ]; then
+  if [ -z "$subdir" ]; then
+    if [ -z "$branch" ]; then
+      git clone -q --recursive --shallow-submodules --depth=1 $url "$plugindir"
+    else
+      git clone -q --branch "$branch" -c advice.detachedHead=false --recursive --shallow-submodules --depth=1 $url "$plugindir"
+    fi
+  else
+    if [ -z "$branch" ]; then
+      git clone -q --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
+    else
+      git clone -q --branch "$branch" -c advice.detachedHead=false --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
+    fi
+  fi
+fi
+
+if [ -n "$subdir" ]; then
+  name="${plugindir:t2}/${subdir:t}"
+  zsh_loaded_snippets+="$name"
+  if [ ! -d  "$plugindir/$subdir" ]; then
+    (cd $plugindir && git sparse-checkout add $subdir && git checkout -q)
+  fi
+  plugindir+="/$subdir"
+else
+  name="${plugindir:t2}"
+  zsh_loaded_plugins+="$name"
+fi
+
+if [ -z "$initfile" ]; then
+  # Assume zsh plugin standard
+  fpath=("$plugindir" $fpath)
+  source $plugindir/*.plugin.zsh([1,1])
+else
+  source "$plugindir/$initfile"
+fi
+
+# Note how long snippet or plugin took to load for benchmark
+_zshrc_bench_plugins+=( [$name]=$(( $EPOCHREALTIME - $start_time  )) )

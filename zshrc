@@ -36,69 +36,6 @@ if [ -d ~/.asdf ]; then
   fpath=(${ASDF_DIR}/completions $fpath)
 fi
 
-# Plugin manager light
-declare -A _zshrc_bench_plugins
-zsh_loaded_plugins=()
-zsh_loaded_snippets=()
-ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/plugins}
-function plugin {
-  # Time plugin and snippet loading in benchmarks
-  local start_time=$EPOCHREALTIME
-  local plugindir url branch initfile subdir name
-  for var in $@; do
-    eval "$var"
-  done
-
-  plugindir="${ZPLUGINDIR}/${url:t2:r}"
-
-  if [ ! -d "$plugindir" ]; then
-    if [ -z "$subdir" ]; then
-      if [ -z "$branch" ]; then
-        git clone -q --recursive --shallow-submodules --depth=1 $url "$plugindir"
-      else
-        git clone -q --branch "$branch" -c advice.detachedHead=false --recursive --shallow-submodules --depth=1 $url "$plugindir"
-      fi
-    else
-      if [ -z "$branch" ]; then
-        git clone -q --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
-      else
-        git clone -q --branch "$branch" -c advice.detachedHead=false --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
-      fi
-    fi
-  fi
-
-  if [ -n "$subdir" ]; then
-    name="${plugindir:t2}/${subdir:t}"
-    zsh_loaded_snippets+="$name"
-    if [ ! -d  "$plugindir/$subdir" ]; then
-      (cd $plugindir && git sparse-checkout add $subdir && git checkout -q)
-    fi
-    plugindir+="/$subdir"
-  else
-    name="${plugindir:t2}"
-    zsh_loaded_plugins+="$name"
-  fi
-
-  if [ -z "$initfile" ]; then
-    # Assume zsh plugin standard
-    fpath=("$plugindir" $fpath)
-    source $plugindir/*.plugin.zsh([1,1])
-  else
-    source "$plugindir/$initfile"
-  fi
-
-  # Note how long snippet or plugin took to load for benchmark
-  _zshrc_bench_plugins+=( [$name]=$(( $EPOCHREALTIME - $start_time  )) )
-}
-
-function update_zsh_plugins {
-  for r in $ZPLUGINDIR/*/*; do
-    echo Updating ${r:t2}
-    (cd $r && git pull && git submodule update)
-    echo
-  done
-}
-
 # Emacs keybindings
 bindkey -e
 
@@ -153,6 +90,27 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*:commands' rehash 1
 
+# Lazy load helper functions
+fpath=("${ZDOTDIR}/functions" $fpath)
+autoload -Uz $fpath[1]/*(.:t)
+if [[ -d "${ZDOTDIR}/local/functions" ]]; then
+  fpath=("${ZDOTDIR}/local/functions" $fpath)
+  autoload -Uz $fpath[1]/*(.:t)
+fi
+
+# Source local env variables
+if [[ -f "${ZDOTDIR}/local/env" ]]; then
+  source "${ZDOTDIR}/local/env"
+fi
+
+# Load local completions
+if [[ -d "{$ZDOTDIR}/local/completions" ]]; then
+  fptah=("{$ZDOTDIR}/local/completions" $fpath)
+fi
+
+# Set up plug-in path
+ZPLUGINDIR="${ZDOTDIR}/plugins"
+
 # Very nice zsh theme
 plugin url='https://github.com/romkatv/powerlevel10k.git' \
        initfile='powerlevel10k.zsh-theme'
@@ -177,16 +135,6 @@ plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
 # Borrow aws plugin from oh-my-zsh
 plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
        subdir='plugins/aws'
-if (( $+commands[gimme-aws-creds] )); then
-function oasp {
-  local cred_expi=$(strftime -r %FT%H:%M:%S+00:00 $(cat ~/.aws/credentials | grep '^x_security_token_expires' | cut -f2 -d=))
-  if [ $(( cred_expi - EPOCHSECONDS)) -lt 0 ]; then
-    gimme-aws-creds
-  fi
-  asp $@
-}
-compctl -K _aws_profiles oasp
-fi
 
 # jq repl
 plugin url='https://github.com/reegnz/jq-zsh-plugin.git'
@@ -210,10 +158,6 @@ plugin url='https://github.com/clarketm/zsh-completions.git'
 
 # Done loading plugins, so we no longer need the plugin function
 unset -f plugin
-
-if [[ -d ~/local/zsh/completions ]]; then
-  fpath+=( ~/local/zsh/completions  )
-fi
 
 # Set up our favorite editor
 if (( $+commands[nvim] )); then
@@ -243,21 +187,12 @@ if (( $+commands[gron] )); then
 fi
 
 # Set up quick cd'ing to project dirs
-quick_paths=(~/Projects)
+quick_paths=(~/Projects ~/projects)
 for d in $quick_paths; do
   if [[ -d "$d" ]]; then
     cdpath+="$d"
   fi
 done
-
-# Add local software to $PATH
-if [[ -d ~/local ]]; then
-  uname_system="$(uname -s)"
-  for d in ~/local/*; do
-    [[ -d "$d/bin" ]] && path+="$d/bin"
-    [[ -d "$d/bin-$uname_system" ]] && path+="$d/bin-$uname_system"
-  done
-fi
 
 # To customize prompt, run `p10k configure` or edit ${ZDOTDIR}/.p10k.zsh.
 if [[ -f ${ZDOTDIR}/.p10k.zsh ]]; then

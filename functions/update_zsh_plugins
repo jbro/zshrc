@@ -1,0 +1,5 @@
+for r in $ZPLUGINDIR/*/*; do
+  echo Updating ${r:t2}
+  (cd $r && git pull && git submodule update)
+  echo
+done

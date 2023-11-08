@@ -36,6 +36,26 @@ if [ -d ~/.asdf ]; then
   fpath=(${ASDF_DIR}/completions $fpath)
 fi
 
+# Lazy load helper functions
+fpath=("${ZDOTDIR}/functions" $fpath)
+autoload -Uz $fpath[1]/*(.:t)
+
+# Lazy load local helper function
+if [[ -d "${ZDOTDIR}/local/functions" ]]; then
+  fpath=("${ZDOTDIR}/local/functions" $fpath)
+  autoload -Uz $fpath[1]/*(.:t)
+fi
+
+# Source local env variables
+if [[ -f "${ZDOTDIR}/local/env" ]]; then
+  source "${ZDOTDIR}/local/env"
+fi
+
+# Load local completions
+if [[ -d "${ZDOTDIR}/local/completions" ]]; then
+  fpath=("${ZDOTDIR}/local/completions" $fpath)
+fi
+
 # Emacs keybindings
 bindkey -e
 
@@ -88,26 +108,6 @@ zstyle ':completion:*' group-name ''
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*:commands' rehash 1
-
-# Lazy load helper functions
-fpath=("${ZDOTDIR}/functions" $fpath)
-autoload -Uz $fpath[1]/*(.:t)
-
-# Lazy load local helper function
-if [[ -d "${ZDOTDIR}/local/functions" ]]; then
-  fpath=("${ZDOTDIR}/local/functions" $fpath)
-  autoload -Uz $fpath[1]/*(.:t)
-fi
-
-# Source local env variables
-if [[ -f "${ZDOTDIR}/local/env" ]]; then
-  source "${ZDOTDIR}/local/env"
-fi
-
-# Load local completions
-if [[ -d "{$ZDOTDIR}/local/completions" ]]; then
-  fptah=("{$ZDOTDIR}/local/completions" $fpath)
-fi
 
 # Set up plug-in path
 ZPLUGINDIR="${ZDOTDIR}/plugins"

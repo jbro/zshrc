@@ -1,6 +1,7 @@
 .zhistory
 .zcompdump
 .zcompdump.zwc
+.zprofile
 plugins/
 .zcompcache/
 .zsh_sessions/

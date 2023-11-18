@@ -86,8 +86,8 @@ bindkey "^[[A" up-line-or-beginning-search # Up
 bindkey "^[[B" down-line-or-beginning-search # Down
 
 # Alt plus left and right move by word
-bindkey "^[[1;C" forward-word
-bindkey "^[[1;D" backward-word
+bindkey "^[[1;3C" forward-word
+bindkey "^[[1;3D" backward-word
 
 # Optimize completion cache once per day
 autoload -Uz compinit

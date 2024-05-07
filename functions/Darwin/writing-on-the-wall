@@ -26,8 +26,9 @@ wallpaper=~/Documents/wallpapers/writing-on-the-wall-$(date +%s).png
 # Write the message on the wall
 convert -size "$display_size" "xc:$bgcolor" \
   -font "$font" -pointsize "$pointsize" \
-  -fill "$shadow_color" -draw "text 12,52 '$(grep -v '^#' ~/.writing-on-the-wall.txt)'" \
-  -fill "$fill_color" -draw "text 10,50 '$(grep -v '^#' ~/.writing-on-the-wall.txt)'" \
+  -fill "$shadow_color" -draw "text 12,72 '$(grep -v '^#' ~/.writing-on-the-wall.txt)'" \
+  -fill "$fill_color" -draw "text 10,70 '$(grep -v '^#' ~/.writing-on-the-wall.txt)'" \
   "$wallpaper"
 
-desktoppr main "$wallpaper"
+desktoppr "$wallpaper"
+desktoppr scale stretch

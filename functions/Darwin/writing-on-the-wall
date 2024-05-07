@@ -1,0 +1,33 @@
+# Write a message on the wall
+${EDITOR:-vi} ~/.writing-on-the-wall.txt
+
+# Extract the size from ~/.writing-on-the-wall.txt
+display_size=$(sed -n -E 's/^#size=([0-9]+x[0-9]+)/\1/p' ~/.writing-on-the-wall.txt)
+
+# Extract the bgcolor from ~/.writing-on-the-wall.txt
+bgcolor=$(sed -n -E 's/^#bgcolor=(.*)/\1/p' ~/.writing-on-the-wall.txt)
+
+# Extract the fill_color from ~/.writing-on-the-wall.txt
+fill_color=$(sed -n -E 's/^#fill_color=(.*)/\1/p' ~/.writing-on-the-wall.txt)
+
+# Extract the shadow_color from ~/.writing-on-the-wall.txt
+shadow_color=$(sed -n -E 's/^#shadow_color=(.*)/\1/p' ~/.writing-on-the-wall.txt)
+
+# Extract font from ~/.writing-on-the-wall.txt
+font=$(sed -n -E 's/^#font=(.*)/\1/p' ~/.writing-on-the-wall.txt)
+
+# Extract pointsize from ~/.writing-on-the-wall.txt
+pointsize=$(sed -n -E 's/^#pointsize=(.*)/\1/p' ~/.writing-on-the-wall.txt)
+
+rm -f ~/Documents/wallpapers/writing-on-the-wall-*.png
+
+wallpaper=~/Documents/wallpapers/writing-on-the-wall-$(date +%s).png
+
+# Write the message on the wall
+convert -size "$display_size" "xc:$bgcolor" \
+  -font "$font" -pointsize "$pointsize" \
+  -fill "$shadow_color" -draw "text 12,52 '$(grep -v '^#' ~/.writing-on-the-wall.txt)'" \
+  -fill "$fill_color" -draw "text 10,50 '$(grep -v '^#' ~/.writing-on-the-wall.txt)'" \
+  "$wallpaper"
+
+m wallpaper "$wallpaper"

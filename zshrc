@@ -40,6 +40,12 @@ fi
 fpath=("${ZDOTDIR}/functions" $fpath)
 autoload -Uz $fpath[1]/*(.:t)
 
+# Lazy load OS specific helper functions
+if [[ -d "${ZDOTDIR}/functions/$(uname -o)" ]]; then
+  fpath=("${ZDOTDIR}/functions/$(uname -o)" $fpath)
+  autoload -Uz $fpath[1]/*(.:t)
+fi
+
 # Lazy load local helper function
 if [[ -d "${ZDOTDIR}/local/functions" ]]; then
   fpath=("${ZDOTDIR}/local/functions" $fpath)

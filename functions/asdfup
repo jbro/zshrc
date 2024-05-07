@@ -1,0 +1,7 @@
+local pre post
+pre=$(asdf current 2>/dev/null)
+asdf current 2>/dev/null | cut -f 1 -d ' ' | xargs -n1 -I% asdf install % latest > /dev/null
+asdf current 2>/dev/null | cut -f 1 -d ' ' | xargs -n1 -I% asdf global % latest
+post=$(asdf current 2>/dev/null)
+
+diff <(echo "$pre") <(echo "$post") | bat -p --theme=gruvbox-dark

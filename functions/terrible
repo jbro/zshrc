@@ -1,0 +1,6 @@
+if [[ -f "terragrunt.hcl" ]]; then
+  \terragrunt "$@"
+else
+  \terraform "$@"
+fi
+

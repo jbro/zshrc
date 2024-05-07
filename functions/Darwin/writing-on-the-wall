@@ -30,4 +30,4 @@ convert -size "$display_size" "xc:$bgcolor" \
   -fill "$fill_color" -draw "text 10,50 '$(grep -v '^#' ~/.writing-on-the-wall.txt)'" \
   "$wallpaper"
 
-m wallpaper "$wallpaper"
+osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$wallpaper\" as POSIX file"

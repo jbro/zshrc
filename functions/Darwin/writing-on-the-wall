@@ -30,5 +30,7 @@ convert -size "$display_size" "xc:$bgcolor" \
   -fill "$fill_color" -draw "text 10,70 '$(grep -v '^#' ~/.writing-on-the-wall.txt)'" \
   "$wallpaper"
 
-desktoppr "$wallpaper"
-desktoppr scale stretch
+echo "Wallpaper written to $wallpaper"
+echo "Don't forget to set it as your wallpaper!"
+open "x-apple.systempreferences:com.apple.Wallpaper-Settings.extension"
+ 

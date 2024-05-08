@@ -205,6 +205,10 @@ for d in $quick_paths; do
   fi
 done
 
+# Enable direnv Part I
+# ref: https://github.com/romkatv/powerlevel10k#how-do-i-initialize-direnv-when-using-instant-prompt
+(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv export zsh)"
+
 # To customize prompt, run `p10k configure` or edit ${ZDOTDIR}/.p10k.zsh.
 if [[ -f ${ZDOTDIR}/.p10k.zsh ]]; then
   source ${ZDOTDIR}/.p10k.zsh
@@ -217,6 +221,9 @@ if [[ -f ${ZDOTDIR}/.p10k.zsh ]]; then
   typeset -g POWERLEVEL9K_TERM_SHELL_INTEGRATION=true
   p10k reload
 fi
+
+# Enable direnv Part II
+(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv hook zsh)"
 
 # Mark for benchmark when config was done loading
 _zshrc_bench_done=$EPOCHREALTIME

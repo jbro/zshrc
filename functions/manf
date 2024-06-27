@@ -3,4 +3,4 @@ fzf \
   --bind 'enter:become:(man {1}{2})' \
   --bind 'esc:cancel' \
   --preview-window 'up,50%,border-bottom' \
-  --preview 'man {1}{2}'
+  --preview 'MAN_KEEP_FORMATTING=1 man {1}{2} 2>/dev/null'

@@ -176,10 +176,10 @@ if (( $+commands[nvim] )); then
   alias vim=nvim
 fi
 
-# Use exa as ls
-if (( $+commands[exa] )); then
-  alias ls="exa --classify"
-  alias tree="exa --tree"
+# Use eza as ls
+if (( $+commands[eza] )); then
+  alias ls="eza --classify"
+  alias tree="eza --tree"
 fi
 
 # Delete to trash

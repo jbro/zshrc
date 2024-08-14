@@ -10,7 +10,7 @@ if [[ -f /opt/homebrew/bin/brew ]]; then
   export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
   export HOMEBREW_REPOSITORY="/opt/homebrew";
   export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}";
-  export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:";
+  [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}";
   export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 fi
 

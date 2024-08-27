@@ -178,7 +178,7 @@ fi
 
 # Use eza as ls
 if (( $+commands[eza] )); then
-  alias ls="eza --classify"
+  alias ls="eza --classify auto"
   alias tree="eza --tree"
 fi
 

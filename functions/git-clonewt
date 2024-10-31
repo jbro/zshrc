@@ -1,0 +1,17 @@
+local url bname name
+
+url=$1
+bname=$(basename "$url")
+name=$(basename "$url" .git)
+
+(
+  mkdir -p "$name"
+  cd "$name" || exit
+
+  git clone --bare "$url" "$bname" || exit
+
+  echo "gitdir: $bname" > .git
+
+  git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+  git fetch origin
+)

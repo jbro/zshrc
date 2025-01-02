@@ -151,8 +151,7 @@ plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
 plugin url='https://github.com/reegnz/jq-zsh-plugin.git'
 
 # enhanced cd
-plugin url='https://github.com/jbro/enhancd.git' \
-       branch='cdpath'
+plugin url='https://github.com/babarot/enhancd.git'
 
 # Borrow fzf plugin from Oh my zsh
 if (( $+commands[fzf] )); then

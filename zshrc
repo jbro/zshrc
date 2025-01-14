@@ -32,6 +32,7 @@ _zshrc_bench_prompt=$EPOCHREALTIME
 
 # asdf
 if [ -d ~/.asdf ]; then
+  export ASDF_GOLANG_MOD_VERSION_ENABLED=true
   source ~/.asdf/asdf.sh
   fpath=(${ASDF_DIR}/completions $fpath)
 fi

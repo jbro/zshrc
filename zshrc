@@ -31,10 +31,10 @@ fi
 _zshrc_bench_prompt=$EPOCHREALTIME
 
 # asdf
-if [ -d ~/.asdf ]; then
+if (( $+commands[asdf] )); then
   export ASDF_GOLANG_MOD_VERSION_ENABLED=true
-  source ~/.asdf/asdf.sh
-  fpath=(${ASDF_DIR}/completions $fpath)
+  export ASDF_DATA_DIR=~/.asdf
+  export PATH=$ASDF_DATA_DIR/shims:$PATH
 fi
 
 # Lazy load helper functions

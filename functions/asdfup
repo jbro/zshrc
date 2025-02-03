@@ -1,7 +1,13 @@
 local pre post
+
+asdf plugin update --all
+
 pre=$(asdf current 2>/dev/null)
-asdf current 2>/dev/null | cut -f 1 -d ' ' | xargs -n1 -I% asdf install % latest > /dev/null
-asdf current 2>/dev/null | cut -f 1 -d ' ' | xargs -n1 -I% asdf global % latest
+
+asdf current 2>/dev/null | tail -n +2 | cut -f 1 -d ' ' | xargs -n1 -I% asdf install % latest
+
+asdf current 2>/dev/null | tail -n +2 | cut -f 1 -d ' ' | xargs -n1 -I% asdf set -u % latest
+
 post=$(asdf current 2>/dev/null)
 
 diff <(echo "$pre") <(echo "$post") | bat -p --theme=gruvbox-dark

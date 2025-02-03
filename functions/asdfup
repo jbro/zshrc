@@ -8,6 +8,8 @@ asdf current 2>/dev/null | tail -n +2 | cut -f 1 -d ' ' | xargs -n1 -I% asdf ins
 
 asdf current 2>/dev/null | tail -n +2 | cut -f 1 -d ' ' | xargs -n1 -I% asdf set -u % latest
 
+asdf current 2>/dev/null | tail -n +2 | cut -f 1 -d ' ' | xargs -n1 asdf reshim
+
 post=$(asdf current 2>/dev/null)
 
 diff <(echo "$pre") <(echo "$post") | bat -p --theme=gruvbox-dark

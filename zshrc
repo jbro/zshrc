@@ -96,17 +96,20 @@ bindkey "^[[B" down-line-or-beginning-search # Down
 bindkey "^[[1;3C" forward-word
 bindkey "^[[1;3D" backward-word
 
-# Optimize completion cache once per day
+# Optimize completion cache about once per day
 autoload -Uz compinit
+_zshrc_bench_comp_start=$EPOCHREALTIME
 setopt EXTENDEDGLOB
 if [[ ${ZDOTDIR}/.zcompdump(#qN.mh-20) ]]; then
   compinit -C
 else
+  rm -f "${ZDOTDIR}/.zcompdump" "${ZDOTDIR}/.zwc"
   compinit
-  touch "${ZDOTDIR}/.zcompdump"
   zcompile "${ZDOTDIR}/.zcompdump"
+  touch "${ZDOTDIR}/.zcompdump"
 fi
 unsetopt EXTENDEDGLOB
+_zshrc_bench_comp_end=$EPOCHREALTIME
 
 # Set up completion style like I want it
 zstyle ':completion:*' completer _extensions _complete _approximate
@@ -238,6 +241,8 @@ function _zshrc_bench_report {
   for s in $zsh_loaded_snippets; do
     printf "  $s:;%6.1f ms\n" $(( $_zshrc_bench_plugins[$s] * 1000))
   done | column -t -c 2 -s ';'
+  echo
+  printf 'Completion init time: %6.1f ms\n' $((_zshrc_bench_comp_end - _zshrc_bench_comp_start))
   echo
   printf 'Time to prompt: %6.1f ms\n' $(( $time_to_prompt * 1000 ))
   printf 'Time to load:   %6.1f ms\n'  $(( $time_to_load * 1000 ))

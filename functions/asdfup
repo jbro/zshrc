@@ -1,4 +1,12 @@
-local pre post
+local pre post tmpfile
+
+# This is a workaround for https://github.com/jonathanmorley/asdf-pnpm/issues/33
+# Store .npmrc in a temporary file
+if [ -f ~/.npmrc ]; then
+  tmpfile=$(mktemp -t asdfup)
+  echo "Temporarily moving ~/.npmrc to $tmpfile"
+  mv .npmrc "$tmpfile"
+fi
 
 asdf plugin update --all
 
@@ -13,3 +21,10 @@ asdf current 2>/dev/null | tail -n +2 | cut -f 1 -d ' ' | xargs -n1 asdf reshim
 post=$(asdf current 2>/dev/null)
 
 diff <(echo "$pre") <(echo "$post") | bat -p --theme=gruvbox-dark
+
+# Move .npmrc back from temp
+if [ -f "$tmpfile" -a ! -f ~/.npmrc ]; then
+  mv "$tmpfile" ~/.npmrc
+  echo "Restored ~/.npmrc from $tmpfile"
+fi
+

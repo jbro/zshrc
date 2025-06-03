@@ -5,7 +5,7 @@ local pre post tmpfile
 if [ -f ~/.npmrc ]; then
   tmpfile=$(mktemp -t asdfup)
   echo "Temporarily moving ~/.npmrc to $tmpfile"
-  mv .npmrc "$tmpfile"
+  mv ~/.npmrc "$tmpfile"
 fi
 
 asdf plugin update --all

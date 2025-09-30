@@ -255,8 +255,8 @@ function _zshrc_bench_report {
 # Memoize benchmark report
 eval "function zshrc_benchmark { echo '$(_zshrc_bench_report)' }"
 
-# Clean up benchmark variables and function
-unset -f -m "_zshrc_bench_*"
-unset -m "_zshrc_bench_*"
+# Clean up local variables and function
+unset -f -m "_zshrc_*"
+unset -m "_zshrc_*"
 
 #zprof

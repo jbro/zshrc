@@ -205,12 +205,14 @@ if (( $+commands[gron] )); then
 fi
 
 # Set up quick cd'ing to project dirs
-quick_paths=(~/Projects ~/projects)
-for d in $quick_paths; do
-  if [[ -d "$d" ]]; then
-    cdpath+="$d"
-  fi
-done
+if [[ -f "${ZDOTDIR}/local/quick_paths" ]]; then
+  _zshrc_quick_paths=("${(@f)$(<${ZDOTDIR}/local/quick_paths)}")
+  for d in $_zshrc_quick_paths; do
+    if [[ -d ${~d} ]]; then
+      cdpath+=${~d}
+    fi
+  done
+fi
 
 # Load direnv
 (( ${+commands[direnv]} )) && eval "$(direnv hook zsh)"

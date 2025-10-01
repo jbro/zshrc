@@ -1,3 +1,4 @@
+# Load zsh profiling module
 zmodload zsh/zprof
 # Start load benchmarking
 zmodload zsh/datetime
@@ -262,4 +263,4 @@ unset -f -m "_zshrc_*"
 unset -m "_zshrc_*"
 
 # Memoize zprof output
-eval "function zshrc_zprof { echo '$(zprof)' }"
+eval "function zshrc_profile { echo '$(zprof)' }"

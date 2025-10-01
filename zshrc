@@ -1,5 +1,9 @@
 # Load zsh profiling module
 zmodload zsh/zprof
+
+# Store all current variable names in an array, so we can see which new ones were added
+typeset -a _zshrcX_var_names=(${(k)parameters})
+
 # Start load benchmarking
 zmodload zsh/datetime
 _zshrc_bench_start=$EPOCHREALTIME
@@ -261,6 +265,19 @@ eval "function zshrc_benchmark { echo '$(_zshrc_bench_report)' }"
 # Clean up local variables and function
 unset -f -m "_zshrc_*"
 unset -m "_zshrc_*"
+
+# Memoize new variables introduced by this zshrc
+eval "function zshrc_show_new_vars {
+  echo '$(
+    echo "Variables introduced by this zshrc:"
+    for var in ${(ko)parameters}; do
+      if [[ ! " ${_zshrcX_var_names[@]} " =~ " ${var} " ]]; then
+        echo "$var"
+      fi
+    done
+  )'
+}"
+unset _zshrcX_var_names # Clean up after ourselves
 
 # Memoize zprof output
 eval "function zshrc_profile { echo '$(zprof)' }"

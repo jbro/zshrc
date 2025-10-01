@@ -269,15 +269,18 @@ unset -m "_zshrc_*"
 # Memoize new variables introduced by this zshrc
 eval "function zshrc_show_new_vars {
   echo '$(
+    local vars=_zshrcX_var_names
+    unset _zshrcX_var_names
+    echo "Variable count before loading this zshrc: ${#vars[@]}"
+    echo "Variable count after loading this zshrc: ${#parameters}"
     echo "Variables introduced by this zshrc:"
     for var in ${(ko)parameters}; do
-      if [[ ! " ${_zshrcX_var_names[@]} " =~ " ${var} " ]]; then
+      if [[ ! " ${vars[@]} " =~ " ${var} " ]]; then
         echo "$var"
       fi
     done
   )'
 }"
-unset _zshrcX_var_names # Clean up after ourselves
 
 # Memoize zprof output
 eval "function zshrc_profile { echo '$(zprof)' }"

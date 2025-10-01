@@ -1,4 +1,4 @@
-#zmodload zsh/zprof
+zmodload zsh/zprof
 # Start load benchmarking
 zmodload zsh/datetime
 _zshrc_bench_start=$EPOCHREALTIME
@@ -261,4 +261,5 @@ eval "function zshrc_benchmark { echo '$(_zshrc_bench_report)' }"
 unset -f -m "_zshrc_*"
 unset -m "_zshrc_*"
 
-#zprof
+# Memoize zprof output
+eval "function zshrc_zprof { echo '$(zprof)' }"

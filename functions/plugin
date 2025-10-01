@@ -19,26 +19,28 @@ done
 plugindir="${ZPLUGINDIR}/${url:t2:r}"
 
 if [ ! -d "$plugindir" ]; then
-  if [ -z "$subdir" ]; then
-    if [ -z "$branch" ]; then
-      git clone -q --recursive --shallow-submodules --depth=1 $url "$plugindir"
-    else
-      git clone -q --branch "$branch" -c advice.detachedHead=false --recursive --shallow-submodules --depth=1 $url "$plugindir"
-    fi
-  else
-    if [ -z "$branch" ]; then
-      git clone -q --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
-    else
-      git clone -q --branch "$branch" -c advice.detachedHead=false --filter=blob:none --sparse --no-checkout --depth=1 $url "$plugindir"
-    fi
+  echo "Cloning $url into $plugindir"
+  local git_opts=(--quiet --depth=1 --single-branch)
+
+  if [ -n "$branch" ]; then
+    git_opts+=(--branch "$branch" -c advice.detachedHead=false)
   fi
+
+  if [ -n "$subdir" ]; then
+    git_opts+=(--filter=blob:none --sparse --no-checkout)
+  else
+    git_opts+=(--recursive --shallow-submodules)
+  fi
+
+  git clone $git_opts $url "$plugindir"
 fi
 
 if [ -n "$subdir" ]; then
   name="${plugindir:t2}/${subdir:t}"
   zsh_loaded_snippets+="$name"
   if [ ! -d  "$plugindir/$subdir" ]; then
-    (cd $plugindir && git sparse-checkout add $subdir && git checkout -q)
+    echo "Fetching subdir $subdir of $url into $plugindir/$subdir"
+    (cd $plugindir && git sparse-checkout add $subdir && git checkout -q) &> /dev/null
   fi
   plugindir+="/$subdir"
 else

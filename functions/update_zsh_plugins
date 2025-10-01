@@ -1,5 +1,52 @@
+zparseopts -D -E -clean=clean_opt -help=help_opt
+
+# Handle invalid option
+if (( $# > 0 )); then
+  help_opt=true
+  echo "Invalid option: $1"
+fi
+
+if [[ -n $help_opt ]]; then
+  echo "Usage: update_zsh_plugins [--clean] [--help]"
+  echo "  --clean   Remove and re-fetch all plugins instead of updating in place."
+  echo "  --help    Show this help message."
+  return 1
+fi
+
+if [[ -n $clean_opt ]]; then
+  if [ -d "$ZPLUGINDIR" ]; then
+    echo "Removing plugin directory $ZPLUGINDIR..."
+    rm -fr "$ZPLUGINDIR"
+    echo
+  else
+    echo "Error: Plugin directory $ZPLUGINDIR does not exist"
+    return 2
+  fi
+
+  echo "Creating plugin directory $ZPLUGINDIR..."
+  mkdir -p "$ZPLUGINDIR"
+  echo
+
+  echo "Refetching plugins used in .zshrc..."
+  zsh -i -c 'exit'
+  echo
+
+fi
+
 for r in $ZPLUGINDIR/*/*; do
-  echo Updating ${r:t2}
-  (cd $r && git pull && git submodule update)
+  local branch=$(git -C "$r" rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)
+  if [ "$branch" = "" ]; then
+    echo "${r:t2} is locked to a specific tag or commit, skipping update"
+    echo
+    continue
+  fi
+
+  echo "Updating ${r:t2}..."
+  branch=${branch#origin/}
+  git -C "$r" fetch --depth=1 origin "$branch" && \
+    git -C "$r" reset --hard FETCH_HEAD && \
+    git -C "$r" submodule update --init --recursive --depth=1
   echo
 done
+
+echo "Restart your terminals to make sure you have the latest plugins loaded"

@@ -48,6 +48,8 @@ else
   zsh_loaded_plugins+="$name"
 fi
 
+echo
+
 if [ -z "$initfile" ]; then
   # Assume zsh plugin standard
   fpath=("$plugindir" $fpath)

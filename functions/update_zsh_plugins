@@ -29,8 +29,6 @@ if [[ -n $clean_opt ]]; then
 
   echo "Refetching plugins used in .zshrc..."
   zsh -i -c 'exit'
-  echo
-
 fi
 
 for r in $ZPLUGINDIR/*/*; do

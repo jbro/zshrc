@@ -1,6 +1,8 @@
 FZF_DEFAULT_COMMAND='cat ~/.ssh/known_hosts' \
 fzf \
-  --bind "enter:execute-silent(ssh-keygen -R {1} >/dev/null 2>&1; \
-                                ssh-keyscan -T 2 -t ed25519 {1} | grep -v '^#' >> ~/.ssh/known_hosts)+reload(cat ~/.ssh/known_hosts)" \
+  --bind "ctrl-r:execute-silent(ssh-keygen -R {1} >/dev/null 2>&1; ssh-keyscan -T 2 -t ed25519 {1} | grep -v '^#' >> ~/.ssh/known_hosts)+reload(cat ~/.ssh/known_hosts)" \
+  --bind "ctrl-d:execute-silent(ssh-keygen -R {1} >/dev/null 2>&1)+reload(cat ~/.ssh/known_hosts)" \
   --bind 'esc:cancel' \
-  --nth 1,4..
+  --bind 'enter:cancel' \
+  --nth 1,4.. \
+  --header 'Ctrl+r - Refresh host key | Ctrl+d - Delete hostkey | Esc - Quit'

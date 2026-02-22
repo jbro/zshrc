@@ -1,6 +1,5 @@
 # vim: ft=zsh
 brew update \
   && brew upgrade \
-  && brew cleanup
-
-brew bundle dump --force --file ~/.Brewfile
+  && brew cleanup \
+  && brew bundle dump --force --file ~/.Brewfile

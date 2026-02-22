@@ -1,3 +1,4 @@
+# vim: ft=zsh
 local pre post tmpfile
 
 asdf plugin update --all

@@ -1,3 +1,4 @@
+# vim: ft=zsh
 # Plugin manager light
 if [[ ! -v zsh_loaded_plugins ]]; then
   typeset -g zsh_loaded_plugins=()

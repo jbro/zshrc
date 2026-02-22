@@ -1,3 +1,4 @@
+# vim: ft=zsh
 FZF_DEFAULT_COMMAND="rg --hidden --line-number --trim --no-heading --color=always -- ''"
 fzf \
   --ansi \

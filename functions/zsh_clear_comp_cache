@@ -1,1 +1,2 @@
+# vim: ft=zsh
 rm -f "${ZDOTDIR}/.zcompdump" "${ZDOTDIR}/.zcompdump.zwc"

@@ -1,3 +1,4 @@
+# vim: ft=zsh
 # Write a message on the wall
 ${EDITOR:-vi} ~/.writing-on-the-wall.txt
 

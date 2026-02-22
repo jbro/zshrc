@@ -1,3 +1,4 @@
+# vim: ft=zsh
 FZF_DEFAULT_COMMAND='man -k .'
 fzf \
   --bind 'enter:become:(man {1}{2})' \

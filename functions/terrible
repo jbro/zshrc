@@ -1,3 +1,4 @@
+# vim: ft=zsh
 if [[ -f "terragrunt.hcl" ]]; then
   \terragrunt "$@"
 else

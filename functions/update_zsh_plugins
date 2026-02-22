@@ -1,3 +1,4 @@
+# vim: ft=zsh
 zparseopts -D -E -clean=clean_opt -help=help_opt
 
 # Handle invalid option

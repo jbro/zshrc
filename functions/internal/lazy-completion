@@ -1,3 +1,4 @@
+# vim: ft=zsh
 local cmd=$1 gen_cmd=$2 ver_cmd=$3
 local comp_dir="${ZDOTDIR}/completions/local"
 local comp_file="${comp_dir}/_${cmd}"

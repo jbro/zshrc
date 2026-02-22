@@ -213,8 +213,8 @@ if (( $+commands[gron] )); then
 fi
 
 # Set up quick cd'ing to project dirs
-if [[ -f "${ZDOTDIR}/local/quick_paths" ]]; then
-  _zshrc_quick_paths=("${(@f)$(<${ZDOTDIR}/local/quick_paths)}")
+if [[ -f "${ZDOTDIR}/quick_paths" ]]; then
+  _zshrc_quick_paths=("${(@f)$(<${ZDOTDIR}/quick_paths)}")
   for d in $_zshrc_quick_paths; do
     if [[ -d ${~d} ]]; then
       cdpath+=${~d}

@@ -9,6 +9,16 @@ typeset -a _zshrcX_var_names=(${(k)parameters})
 zmodload zsh/datetime
 _zshrc_bench_start=$EPOCHREALTIME
 
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ${ZDOTDIR}/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Mark in benchmark when prompt appears
+_zshrc_bench_prompt=$EPOCHREALTIME
+
 # Deduplicate PATH automatically
 typeset -U path
 
@@ -25,16 +35,6 @@ fi
 if [[ -f "${ZDOTDIR}/env/local" ]]; then
   source "${ZDOTDIR}/env/local"
 fi
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ${ZDOTDIR}/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-# Mark in benchmark when prompt appears
-_zshrc_bench_prompt=$EPOCHREALTIME
 
 # Setup homebrew
 if [[ -f /opt/homebrew/bin/brew ]]; then

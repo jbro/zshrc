@@ -55,6 +55,16 @@ if (( $+commands[asdf] )); then
   export PATH=$ASDF_DATA_DIR/shims:$PATH
 fi
 
+# bun
+if (( $+commands[bun] )); then
+  export PATH=~/.bun/bin:$PATH
+fi
+
+# cargo
+if (( $+commands[cargo] )); then
+  export PATH=~/.cargo/bin:$PATH
+fi
+
 # Lazy load helper functions
 fpath=("${ZDOTDIR}/functions" $fpath)
 autoload -Uz $fpath[1]/*(.:t)

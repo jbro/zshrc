@@ -295,7 +295,7 @@ eval "function zshrc_show_new_vars {
     echo "Variable count after loading this zshrc: ${#parameters}"
     echo "Variables introduced by this zshrc:"
     for var in ${(ko)parameters}; do
-      if [[ ! " ${vars[@]} " =~ " ${var} " ]]; then
+      if (( ! ${vars[(I)$var]} )); then
         echo "$var"
       fi
     done

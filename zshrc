@@ -68,24 +68,30 @@ if (( $+commands[cargo] )); then
   export PATH=~/.cargo/bin:$PATH
 fi
 
+# Load internal helper functions first (needed by compile step below)
+fpath=("${ZDOTDIR}/functions/internal" $fpath)
+autoload -Uz $fpath[1]/*(.:t)
+
 # Lazy load helper functions
 fpath=("${ZDOTDIR}/functions" $fpath)
 autoload -Uz $fpath[1]/*(.:t)
 
-# Load internal helper functions
-fpath=("${ZDOTDIR}/functions/internal" $fpath)
-autoload -Uz $fpath[1]/*(.:t)
+# Compile all function files to .zwc for faster loading
+_zshrc_compile_funcs "${ZDOTDIR}/functions/internal"
+_zshrc_compile_funcs "${ZDOTDIR}/functions"
 
 # Lazy load OS specific helper functions
 if [[ -d "${ZDOTDIR}/functions/$_zshrc_ostype/" ]]; then
   fpath=("${ZDOTDIR}/functions/$_zshrc_ostype/" $fpath)
   autoload -Uz $fpath[1]/*(.:t)
+  _zshrc_compile_funcs "${ZDOTDIR}/functions/$_zshrc_ostype"
 fi
 
 # Lazy load local helper function
 if [[ -d "${ZDOTDIR}/functions/local/" ]]; then
   fpath=("${ZDOTDIR}/functions/local/" $fpath)
   autoload -Uz $fpath[1]/*(.:t)
+  _zshrc_compile_funcs "${ZDOTDIR}/functions/local"
 fi
 
 # Load local completions

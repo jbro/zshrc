@@ -1,0 +1,8 @@
+# vim: ft=zsh
+local f
+for f in "$1"/*(N.); do
+  [[ "$f" == *.zwc ]] && continue
+  if [[ ! -f "$f.zwc" || "$f" -nt "$f.zwc" ]]; then
+    zcompile "$f"
+  fi
+done

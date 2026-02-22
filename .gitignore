@@ -6,6 +6,9 @@
 .zcompcache/
 .zsh_sessions/
 
+# Compiled functions
+*.zwc
+
 # Plugins
 plugins/
 

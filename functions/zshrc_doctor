@@ -157,13 +157,45 @@ _doctor_plugins() {
   fi
 }
 
+_doctor_compiled() {
+  local -a dirs=("$zsh_dir/functions" "$zsh_dir/functions/internal")
+  [[ -d "$zsh_dir/functions/$ostype" ]] && dirs+=("$zsh_dir/functions/$ostype")
+  [[ -d "$zsh_dir/functions/local" ]] && dirs+=("$zsh_dir/functions/local")
+
+  local -a stale missing
+  local dir f
+  for dir in "${dirs[@]}"; do
+    for f in "$dir"/*(N.); do
+      [[ "$f" == *.zwc ]] && continue
+      if [[ ! -f "$f.zwc" ]]; then
+        missing+=("${f#$zsh_dir/}")
+      elif [[ "$f" -nt "$f.zwc" ]]; then
+        stale+=("${f#$zsh_dir/}")
+      fi
+    done
+  done
+
+  print -P "\n%B── compiled functions ──%b"
+  if (( ${#missing} + ${#stale} == 0 )); then
+    print -P "  %F{green}✓%f  All functions compiled and up to date"
+  else
+    for f in $missing; do
+      print -P "  %F{yellow}⚠%f  $f — not compiled"
+    done
+    for f in $stale; do
+      print -P "  %F{yellow}⚠%f  $f — .zwc outdated"
+    done
+  fi
+}
+
 _doctor_path
 _doctor_fpath
 _doctor_plugins
+_doctor_compiled
 _doctor_scan "zshrc" "$zsh_dir/.zshrc"
 _doctor_scan "functions" "$zsh_dir"/functions/*(N.)
 _doctor_scan "local" "$zsh_dir"/functions/local/*(N.)
 _doctor_scan "$ostype" "$zsh_dir"/functions/${ostype}/*(N.)
 _doctor_completions
 
-unfunction _doctor_plugins _doctor_path _doctor_fpath _doctor_scan _doctor_completions
+unfunction _doctor_plugins _doctor_path _doctor_fpath _doctor_compiled _doctor_scan _doctor_completions

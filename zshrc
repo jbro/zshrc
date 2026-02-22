@@ -1,6 +1,6 @@
 # vim: ft=zsh
-# Load zsh profiling module
-zmodload zsh/zprof
+# Load zsh profiling module (use ZSH_PROFILE=1 zsh to enable)
+[[ -v ZSH_PROFILE ]] && zmodload zsh/zprof
 
 # Store all current variable names in an array, so we can see which new ones were added
 typeset -a _zshrcX_var_names=(${(k)parameters})
@@ -300,4 +300,6 @@ eval "function zshrc_show_new_vars {
 }"
 
 # Memoize zprof output
-eval "function zshrc_profile { echo '$(zprof)' }"
+if [[ -v ZSH_PROFILE ]]; then
+  eval "function zshrc_profile { echo '$(zprof)' }"
+fi

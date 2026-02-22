@@ -12,7 +12,7 @@ if [[ -f $comp_file ]]; then
   if [[ $header == '# lazy-completion: version='* ]]; then
     # Managed by us — check age
     local file_age=$(( EPOCHSECONDS - $(stat -c %Y "$comp_file" 2>/dev/null || stat -f %m "$comp_file" 2>/dev/null) ))
-    if (( file_age > 86400 )); then
+    if (( file_age > 72000 )); then
       local cached_version=${header#\# lazy-completion: version=}
       local current_version=$(eval $ver_cmd 2>/dev/null)
       if [[ $current_version != $cached_version ]]; then

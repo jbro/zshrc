@@ -72,6 +72,10 @@ fi
 fpath=("${ZDOTDIR}/functions" $fpath)
 autoload -Uz $fpath[1]/*(.:t)
 
+# Load internal helper functions
+fpath=("${ZDOTDIR}/functions/internal" $fpath)
+autoload -Uz $fpath[1]/*(.:t)
+
 # Lazy load OS specific helper functions
 if [[ -d "${ZDOTDIR}/functions/$_zshrc_ostype/" ]]; then
   fpath=("${ZDOTDIR}/functions/$_zshrc_ostype/" $fpath)
@@ -238,6 +242,7 @@ fi
 # Lazy completions
 lazy-completion gh "gh completion -s zsh" "gh --version"
 lazy-completion kubectl "kubectl completion zsh" "kubectl version --client --short"
+unset -f lazy-completion
 
 # Load direnv
 (( ${+commands[direnv]} )) && eval "$(direnv hook zsh)"

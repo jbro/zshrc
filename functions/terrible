@@ -1,7 +1,9 @@
 # vim: ft=zsh
+# doctor: terrible requires: terraform
+(( $+commands[terraform] )) || { unfunction terrible; return 0 }
+
 if [[ -f "terragrunt.hcl" ]]; then
   \terragrunt "$@"
 else
   \terraform "$@"
 fi
-

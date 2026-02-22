@@ -1,0 +1,169 @@
+# vim: ft=zsh
+# Scan zshrc and functions/ for doctor annotations
+# and report which features are disabled due to missing commands.
+# Also report on PATH, fpath, and completion cache health.
+
+local zsh_dir="${ZDOTDIR:-$HOME/.config/zsh}"
+local ostype="${OSTYPE%%[^a-zA-Z]*}"
+local max_age=72000 # 20 hours in seconds
+
+_doctor_path() {
+  print -P "%B── PATH ──%b"
+  local dir dupes=() seen=()
+  for dir in $path; do
+    if (( ${seen[(I)$dir]} )); then
+      dupes+=("$dir")
+    else
+      seen+=("$dir")
+    fi
+    if [[ -d "$dir" ]]; then
+      local count=$(ls -1 "$dir" 2>/dev/null | wc -l)
+      print "  ${dir} (${count} entries)"
+    else
+      print -P "  %F{yellow}${dir} (missing)%f"
+    fi
+  done
+  if (( ${#dupes} )); then
+    print -P "  %F{yellow}Duplicates: ${(j:, :)dupes}%f"
+  fi
+}
+
+_doctor_fpath() {
+  print -P "\n%B── fpath ──%b"
+  local dir count total=0 dupes=() seen=()
+  for dir in $fpath; do
+    if (( ${seen[(I)$dir]} )); then
+      dupes+=("$dir")
+    else
+      seen+=("$dir")
+    fi
+    if [[ -d "$dir" ]]; then
+      count=$(ls -1 "$dir"/_*(N) 2>/dev/null | wc -l)
+      (( total += count ))
+      (( count > 0 )) && print "  ${dir} (${count} completions)"
+    else
+      print -P "  %F{yellow}${dir} (missing)%f"
+    fi
+  done
+  print "  Total: ${total} completion functions"
+  if (( ${#dupes} )); then
+    print -P "  %F{yellow}Duplicates: ${(j:, :)dupes}%f"
+  fi
+}
+
+_doctor_scan() {
+  local label=$1; shift
+  local -a files=("$@")
+  local -a enabled disabled
+  local file line desc cmds cmd missing
+
+  for file in "${files[@]}"; do
+    [[ -f "$file" ]] || continue
+    while IFS= read -r line; do
+      if [[ "$line" =~ '#[[:space:]]*doctor:[[:space:]]*(.+)[[:space:]]+requires:[[:space:]]*(.+)' ]]; then
+        desc="${match[1]%%[[:space:]]requires:*}"
+        cmds="${match[2]}"
+        missing=()
+        for cmd in ${(z)cmds}; do
+          (( $+commands[$cmd] )) || missing+=("$cmd")
+        done
+        if (( ${#missing} )); then
+          disabled+=("${desc} (missing: ${(j:, :)missing})")
+        else
+          enabled+=("$desc")
+        fi
+      fi
+    done < "$file"
+  done
+
+  (( ${#enabled} + ${#disabled} )) || return
+
+  print -P "\n%B── ${label} ──%b"
+  if (( ${#enabled} )); then
+    for e in "${enabled[@]}"; do
+      print -P "  %F{green}✓%f  $e"
+    done
+  fi
+  if (( ${#disabled} )); then
+    for d in "${disabled[@]}"; do
+      print -P "  %F{yellow}⚠%f  $d"
+    done
+  fi
+}
+
+_doctor_completions() {
+  print -P "\n%B── completions ──%b"
+
+  # compinit dump
+  local dump="$zsh_dir/.zcompdump"
+  if [[ -f "$dump" ]]; then
+    local dump_age=$(( EPOCHSECONDS - $(stat -c %Y "$dump" 2>/dev/null || stat -f %m "$dump" 2>/dev/null) ))
+    local dump_hours=$(printf '%.1f' $(( dump_age / 3600.0 )))
+    local dump_stale
+    if (( dump_age > max_age )); then
+      dump_stale="%F{yellow}stale, will rebuild next shell%f"
+    else
+      dump_stale="%F{green}fresh%f"
+    fi
+    print -P "  .zcompdump: ${dump_hours}h old — ${dump_stale}"
+    [[ -f "${dump}.zwc" ]] && print -P "  .zcompdump.zwc: compiled ✓" \
+                           || print -P "  .zcompdump.zwc: %F{yellow}missing%f"
+  else
+    print -P "  .zcompdump: %F{yellow}missing, will be created next shell%f"
+  fi
+
+  # Lazy completions
+  local comp_dir="$zsh_dir/completions/local"
+  local cmd comp_file header file_age hours cached_ver current_ver comp_status
+  for cmd in ${(k)_lazy_comp_gen}; do
+    comp_file="$comp_dir/_${cmd}"
+    if [[ ! -f "$comp_file" ]]; then
+      print -P "  _${cmd}: %F{yellow}not cached, will generate on first use%f"
+      continue
+    fi
+
+    file_age=$(( EPOCHSECONDS - $(stat -c %Y "$comp_file" 2>/dev/null || stat -f %m "$comp_file" 2>/dev/null) ))
+    hours=$(printf '%.1f' $(( file_age / 3600.0 )))
+
+    read -r header < "$comp_file"
+    if [[ $header == '# lazy-completion: version='* ]]; then
+      cached_ver="${header#\# lazy-completion: version=}"
+      current_ver="$(eval ${_lazy_comp_ver[$cmd]} 2>/dev/null)"
+      if (( file_age > max_age )) && [[ "$cached_ver" != "$current_ver" ]]; then
+        comp_status="%F{yellow}stale — cached: ${cached_ver}, current: ${current_ver}%f"
+      elif (( file_age > max_age )); then
+        comp_status="%F{green}age check pending, version matches%f"
+      else
+        comp_status="%F{green}fresh%f"
+      fi
+      print -P "  _${cmd}: ${hours}h old — ${comp_status}"
+    else
+      print -P "  _${cmd}: ${hours}h old — not managed by lazy-completion"
+    fi
+  done
+}
+
+_doctor_plugins() {
+  print -P "\n%B── plugins ──%b"
+  local p
+  for p in $zsh_loaded_plugins; do
+    print "  $p"
+  done
+  if (( ${#zsh_loaded_snippets} )); then
+    print -P "\n%B── snippets ──%b"
+    for p in $zsh_loaded_snippets; do
+      print "  $p"
+    done
+  fi
+}
+
+_doctor_path
+_doctor_fpath
+_doctor_plugins
+_doctor_scan "zshrc" "$zsh_dir/.zshrc"
+_doctor_scan "functions" "$zsh_dir"/functions/*(N.)
+_doctor_scan "local" "$zsh_dir"/functions/local/*(N.)
+_doctor_scan "$ostype" "$zsh_dir"/functions/${ostype}/*(N.)
+_doctor_completions
+
+unfunction _doctor_plugins _doctor_path _doctor_fpath _doctor_scan _doctor_completions

@@ -187,7 +187,7 @@ plugin url='https://github.com/reegnz/jq-zsh-plugin.git'
 # enhanced cd
 plugin url='https://github.com/babarot/enhancd.git'
 
-# Borrow fzf plugin from Oh my zsh
+# doctor: fzf integration requires: fzf
 if (( $+commands[fzf] )); then
 export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
     --color=bg+:#3c3836,bg:#1d2021,spinner:#8ec07c,hl:#83a598 \
@@ -203,27 +203,29 @@ plugin url='https://github.com/clarketm/zsh-completions.git'
 # Done loading plugins, so we no longer need the plugin function
 unset -f plugin
 
-# Set up our favorite editor
+# doctor: nvim as vim requires: nvim
 if (( $+commands[nvim] )); then
   alias vim=nvim
 fi
 
-# Use eza as ls
+# doctor: eza as ls requires: eza
 if (( $+commands[eza] )); then
   alias ls="eza --classify auto"
   alias tree="eza --tree"
 fi
 
+# doctor: trash alias requires: trash
 # Delete to trash
 if (( $+commands[trash] )); then
   alias rm=trash
 fi
 
-# Set bat theme
+# doctor: bat theme requires: bat
 if (( $+commands[bat] )); then
   alias bat="bat --theme=gruvbox-dark"
 fi
 
+# doctor: gron/ungron aliases requires: gron
 if (( $+commands[gron] )); then
   alias norg="gron --ungron"
   alias ungron="gron --ungron"
@@ -240,11 +242,13 @@ if [[ -f "${ZDOTDIR}/quick_paths" ]]; then
 fi
 
 # Lazy completions
+# doctor: gh completions requires: gh
 lazy-completion gh "gh completion -s zsh" "gh --version"
+# doctor: kubectl completions requires: kubectl
 lazy-completion kubectl "kubectl completion zsh" "kubectl version --client --short"
 unset -f lazy-completion
 
-# Load direnv
+# doctor: direnv hook requires: direnv
 (( ${+commands[direnv]} )) && eval "$(direnv hook zsh)"
 
 # To customize prompt, run `p10k configure` or edit ${ZDOTDIR}/.p10k.zsh.

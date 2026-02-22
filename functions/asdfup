@@ -1,4 +1,7 @@
 # vim: ft=zsh
+# doctor: asdfup requires: asdf bat
+(( $+commands[asdf] && $+commands[bat] )) || { unfunction asdfup; return 0 }
+
 local pre post plugins
 
 asdf plugin update --all
@@ -15,4 +18,3 @@ done
 post=$(asdf current 2>/dev/null)
 
 diff <(echo "$pre") <(echo "$post") | bat -p --theme=gruvbox-dark
-

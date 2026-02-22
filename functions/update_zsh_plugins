@@ -1,4 +1,7 @@
 # vim: ft=zsh
+# doctor: update_zsh_plugins requires: git
+(( $+commands[git] )) || { unfunction update_zsh_plugins; return 0 }
+
 zparseopts -D -E -clean=clean_opt -help=help_opt
 
 # Handle invalid option

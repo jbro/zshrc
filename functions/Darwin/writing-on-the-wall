@@ -1,4 +1,7 @@
 # vim: ft=zsh
+# doctor: writing-on-the-wall requires: convert
+(( $+commands[convert] )) || { unfunction writing-on-the-wall; return 0 }
+
 # Edit a text file, render it as a wallpaper with ImageMagick, and open wallpaper settings.
 local config=~/.writing-on-the-wall.txt
 ${EDITOR:-vi} "$config"

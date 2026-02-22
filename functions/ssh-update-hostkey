@@ -1,4 +1,7 @@
 # vim: ft=zsh
+# doctor: ssh-update-hostkey requires: fzf
+(( $+commands[fzf] )) || { unfunction ssh-update-hostkey; return 0 }
+
 FZF_DEFAULT_COMMAND='cat ~/.ssh/known_hosts' \
 fzf \
   --bind "ctrl-r:execute-silent(ssh-keygen -R {1} >/dev/null 2>&1; ssh-keyscan -T 2 -t ed25519 {1} | grep -v '^#' >> ~/.ssh/known_hosts)+reload(cat ~/.ssh/known_hosts)" \

@@ -1,4 +1,7 @@
 # vim: ft=zsh
+# doctor: brewup requires: brew
+(( $+commands[brew] )) || { unfunction brewup; return 0 }
+
 brew update \
   && brew upgrade \
   && brew cleanup \

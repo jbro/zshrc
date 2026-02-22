@@ -1,4 +1,7 @@
 # vim: ft=zsh
+# doctor: manf requires: fzf
+(( $+commands[fzf] )) || { unfunction manf; return 0 }
+
 FZF_DEFAULT_COMMAND='man -k .'
 fzf \
   --bind 'enter:become:(man {1}{2})' \

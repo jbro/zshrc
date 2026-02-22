@@ -14,8 +14,8 @@ export EDITOR=vim
 
 # Source os env variables
 _zshrc_ostype=${OSTYPE%%[^a-zA-Z]*}
-if [[ -f "${ZDOTDIR}/env/_zshrc_ostype" ]]; then
-  source "${ZDOTDIR}/env/_zshrc_ostype"
+if [[ -f "${ZDOTDIR}/env/$_zshrc_ostype" ]]; then
+  source "${ZDOTDIR}/env/$_zshrc_ostype"
 fi
 
 # Source local env variables
@@ -60,14 +60,14 @@ fpath=("${ZDOTDIR}/functions" $fpath)
 autoload -Uz $fpath[1]/*(.:t)
 
 # Lazy load OS specific helper functions
-if [[ -d "${ZDOTDIR}/functions/$(uname -o)" ]]; then
-  fpath=("${ZDOTDIR}/functions/$(uname -o)" $fpath)
+if [[ -d "${ZDOTDIR}/functions/$_zshrc_ostype/" ]]; then
+  fpath=("${ZDOTDIR}/functions/$_zshrc_ostype/" $fpath)
   autoload -Uz $fpath[1]/*(.:t)
 fi
 
 # Lazy load local helper function
-if [[ -d "${ZDOTDIR}/local/functions" ]]; then
-  fpath=("${ZDOTDIR}/local/functions" $fpath)
+if [[ -d "${ZDOTDIR}/functions/local/" ]]; then
+  fpath=("${ZDOTDIR}/functions/local/" $fpath)
   autoload -Uz $fpath[1]/*(.:t)
 fi
 

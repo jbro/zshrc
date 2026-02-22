@@ -12,5 +12,8 @@ plugins/
 # Local environment variables
 env/local
 
+# Local functions
+functions/local/
+
 # Quick paths
 quick_paths

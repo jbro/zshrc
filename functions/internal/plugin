@@ -13,7 +13,7 @@ fi
 # Time plugin and snippet loading in benchmarks
 local start_time=$EPOCHREALTIME
 local plugindir url branch initfile subdir name
-for var in $@; do
+for var in "$@"; do
   eval "$var"
 done
 
@@ -33,16 +33,16 @@ if [ ! -d "$plugindir" ]; then
     git_opts+=(--recursive --shallow-submodules)
   fi
 
-  git clone $git_opts $url "$plugindir"
+  git clone $git_opts "$url" "$plugindir"
   echo
 fi
 
 if [ -n "$subdir" ]; then
   name="${plugindir:t2}/${subdir:t}"
   zsh_loaded_snippets+="$name"
-  if [ ! -d  "$plugindir/$subdir" ]; then
+  if [ ! -d "$plugindir/$subdir" ]; then
     echo "Fetching subdir $subdir of $url into $plugindir/$subdir"
-    (cd $plugindir && git sparse-checkout add $subdir && git checkout -q) &> /dev/null
+    (cd "$plugindir" && git sparse-checkout add "$subdir" && git checkout -q) &> /dev/null
     echo
   fi
   plugindir+="/$subdir"

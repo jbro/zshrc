@@ -9,6 +9,9 @@ typeset -a _zshrcX_var_names=(${(k)parameters})
 zmodload zsh/datetime
 _zshrc_bench_start=$EPOCHREALTIME
 
+# Deduplicate PATH automatically
+typeset -U path
+
 # Environment variables
 export EDITOR=vim
 

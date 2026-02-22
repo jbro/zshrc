@@ -1,37 +1,26 @@
 # vim: ft=zsh
-# Write a message on the wall
-${EDITOR:-vi} ~/.writing-on-the-wall.txt
+# Edit a text file, render it as a wallpaper with ImageMagick, and open wallpaper settings.
+local config=~/.writing-on-the-wall.txt
+${EDITOR:-vi} "$config"
 
-# Extract the size from ~/.writing-on-the-wall.txt
-display_size=$(sed -n -E 's/^#size=([0-9]+x[0-9]+)/\1/p' ~/.writing-on-the-wall.txt)
-
-# Extract the bgcolor from ~/.writing-on-the-wall.txt
-bgcolor=$(sed -n -E 's/^#bgcolor=(.*)/\1/p' ~/.writing-on-the-wall.txt)
-
-# Extract the fill_color from ~/.writing-on-the-wall.txt
-fill_color=$(sed -n -E 's/^#fill_color=(.*)/\1/p' ~/.writing-on-the-wall.txt)
-
-# Extract the shadow_color from ~/.writing-on-the-wall.txt
-shadow_color=$(sed -n -E 's/^#shadow_color=(.*)/\1/p' ~/.writing-on-the-wall.txt)
-
-# Extract font from ~/.writing-on-the-wall.txt
-font=$(sed -n -E 's/^#font=(.*)/\1/p' ~/.writing-on-the-wall.txt)
-
-# Extract pointsize from ~/.writing-on-the-wall.txt
-pointsize=$(sed -n -E 's/^#pointsize=(.*)/\1/p' ~/.writing-on-the-wall.txt)
+local display_size=$(sed -n -E 's/^#size=([0-9]+x[0-9]+)/\1/p' "$config")
+local bgcolor=$(sed -n -E 's/^#bgcolor=(.*)/\1/p' "$config")
+local fill_color=$(sed -n -E 's/^#fill_color=(.*)/\1/p' "$config")
+local shadow_color=$(sed -n -E 's/^#shadow_color=(.*)/\1/p' "$config")
+local font=$(sed -n -E 's/^#font=(.*)/\1/p' "$config")
+local pointsize=$(sed -n -E 's/^#pointsize=(.*)/\1/p' "$config")
+local message=$(grep -v '^#' "$config")
 
 rm -f ~/Documents/wallpapers/writing-on-the-wall-*.png
 
-wallpaper=~/Documents/wallpapers/writing-on-the-wall-$(date +%s).png
+local wallpaper=~/Documents/wallpapers/writing-on-the-wall-$(date +%s).png
 
-# Write the message on the wall
 convert -size "$display_size" "xc:$bgcolor" \
   -font "$font" -pointsize "$pointsize" \
-  -fill "$shadow_color" -draw "text 12,72 '$(grep -v '^#' ~/.writing-on-the-wall.txt)'" \
-  -fill "$fill_color" -draw "text 10,70 '$(grep -v '^#' ~/.writing-on-the-wall.txt)'" \
+  -fill "$shadow_color" -draw "text 12,72 '${message}'" \
+  -fill "$fill_color" -draw "text 10,70 '${message}'" \
   "$wallpaper"
 
 echo "Wallpaper written to $wallpaper"
 echo "Don't forget to set it as your wallpaper!"
 open "x-apple.systempreferences:com.apple.Wallpaper-Settings.extension"
- 

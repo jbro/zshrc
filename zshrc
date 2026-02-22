@@ -8,6 +8,14 @@ typeset -a _zshrcX_var_names=(${(k)parameters})
 zmodload zsh/datetime
 _zshrc_bench_start=$EPOCHREALTIME
 
+# Environment variables
+export EDITOR=vim
+
+# Source local env variables
+if [[ -f "${ZDOTDIR}/local/env" ]]; then
+  source "${ZDOTDIR}/local/env"
+fi
+
 # Setup homebrew
 if [[ -f /opt/homebrew/bin/brew ]]; then
   # Generated with /opt/homebrew/bin/brew shellenv
@@ -60,11 +68,6 @@ fi
 if [[ -d "${ZDOTDIR}/local/functions" ]]; then
   fpath=("${ZDOTDIR}/local/functions" $fpath)
   autoload -Uz $fpath[1]/*(.:t)
-fi
-
-# Source local env variables
-if [[ -f "${ZDOTDIR}/local/env" ]]; then
-  source "${ZDOTDIR}/local/env"
 fi
 
 # Load local completions
@@ -184,7 +187,6 @@ unset -f plugin
 
 # Set up our favorite editor
 if (( $+commands[nvim] )); then
-  export EDITOR=nvim
   alias vim=nvim
 fi
 

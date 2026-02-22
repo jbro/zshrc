@@ -15,5 +15,8 @@ env/local
 # Local functions
 functions/local/
 
+# Local completions
+completions/local/
+
 # Quick paths
 quick_paths

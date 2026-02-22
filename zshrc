@@ -82,8 +82,8 @@ if [[ -d "${ZDOTDIR}/functions/local/" ]]; then
 fi
 
 # Load local completions
-if [[ -d "${ZDOTDIR}/local/completions" ]]; then
-  fpath=("${ZDOTDIR}/local/completions" $fpath)
+if [[ -d "${ZDOTDIR}/completions/local" ]]; then
+  fpath=("${ZDOTDIR}/completions/local" $fpath)
 fi
 
 # Emacs keybindings
@@ -231,6 +231,10 @@ if [[ -f "${ZDOTDIR}/quick_paths" ]]; then
     fi
   done
 fi
+
+# Lazy completions
+lazy-completion gh "gh completion -s zsh" "gh --version"
+lazy-completion kubectl "kubectl completion zsh" "kubectl version --client --short"
 
 # Load direnv
 (( ${+commands[direnv]} )) && eval "$(direnv hook zsh)"

@@ -1,0 +1,19 @@
+local cmd=$1 gen_cmd=$2 ver_cmd=$3
+local comp_dir="${ZDOTDIR}/completions/local"
+local comp_file="${comp_dir}/_${cmd}"
+
+# Skip if the command doesn't exist
+(( $+commands[$cmd] )) || return 0
+
+# Store config in an associative array for the stub to read
+typeset -gA _lazy_comp_gen _lazy_comp_ver
+_lazy_comp_gen[$cmd]=$gen_cmd
+_lazy_comp_ver[$cmd]=$ver_cmd
+
+# Define a lightweight compdef stub
+eval "
+_lazy_completion_${cmd}() {
+  _lazy_completion_load ${(q)cmd}
+}"
+
+compdef _lazy_completion_${cmd} ${cmd}

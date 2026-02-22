@@ -36,7 +36,7 @@ List directories in `quick_paths` (one per line). They are added to `cdpath` so 
 ## Functions
 
 - `functions/` — Shared functions, autoloaded everywhere.
-- `functions/<ostype>/` — OS-specific functions, only loaded on matching OS (e.g. `functions/Darwin/`).
+- `functions/<ostype>/` — OS-specific functions, only loaded on matching OS (e.g. `functions/darwin/`).
 - `functions/local/` — Machine-local functions (gitignored).
 
 ## Doctor annotations

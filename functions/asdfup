@@ -1,15 +1,16 @@
 # vim: ft=zsh
-local pre post tmpfile
+local pre post plugins
 
 asdf plugin update --all
 
 pre=$(asdf current 2>/dev/null)
+plugins=("${(@f)$(asdf current 2>/dev/null | awk 'NR>1 {print $1}')}")
 
-asdf current 2>/dev/null | tail -n +2 | cut -f 1 -d ' ' | xargs -n1 -I% asdf install % latest
-
-asdf current 2>/dev/null | tail -n +2 | cut -f 1 -d ' ' | xargs -n1 -I% asdf set -u % latest
-
-asdf current 2>/dev/null | tail -n +2 | cut -f 1 -d ' ' | xargs -n1 asdf reshim
+for p in $plugins; do
+  asdf install "$p" latest || { echo "Failed to install $p"; continue }
+  asdf set -u "$p" latest
+  asdf reshim "$p"
+done
 
 post=$(asdf current 2>/dev/null)
 

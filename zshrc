@@ -1,3 +1,4 @@
+# vim: ft=zsh
 # Load zsh profiling module
 zmodload zsh/zprof
 
@@ -11,10 +12,26 @@ _zshrc_bench_start=$EPOCHREALTIME
 # Environment variables
 export EDITOR=vim
 
-# Source local env variables
-if [[ -f "${ZDOTDIR}/local/env" ]]; then
-  source "${ZDOTDIR}/local/env"
+# Source os env variables
+_zshrc_ostype=${OSTYPE%%[^a-zA-Z]*}
+if [[ -f "${ZDOTDIR}/env/_zshrc_ostype" ]]; then
+  source "${ZDOTDIR}/env/_zshrc_ostype"
 fi
+
+# Source local env variables
+if [[ -f "${ZDOTDIR}/env/local" ]]; then
+  source "${ZDOTDIR}/env/local"
+fi
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ${ZDOTDIR}/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Mark in benchmark when prompt appears
+_zshrc_bench_prompt=$EPOCHREALTIME
 
 # Setup homebrew
 if [[ -f /opt/homebrew/bin/brew ]]; then
@@ -30,22 +47,6 @@ if [[ -f /opt/homebrew/bin/brew ]]; then
   # load homebrew's command not found
   source $HOMEBREW_REPOSITORY/Library/Homebrew/command-not-found/handler.sh
 fi
-
-# Various Mac fixes
-if [[ $OSTYPE == "darwin"* ]]; then
-  export LC_ALL=en_US.UTF-8
-  export LANG=en_US
-fi
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ${ZDOTDIR}/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-# Mark in benchmark when prompt appears
-_zshrc_bench_prompt=$EPOCHREALTIME
 
 # asdf
 if (( $+commands[asdf] )); then

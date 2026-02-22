@@ -1,8 +1,13 @@
+# zsh files
 .zhistory
 .zcompdump
 .zcompdump.zwc
 .zprofile
-plugins/
 .zcompcache/
 .zsh_sessions/
-local/
+
+# Plugins
+plugins/
+
+# Local environment variables
+env/local

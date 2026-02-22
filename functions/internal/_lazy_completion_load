@@ -11,14 +11,14 @@ if [[ -f $comp_file ]]; then
   read -r header < $comp_file
   if [[ $header == '# lazy-completion: version='* ]]; then
     # Managed by us — check age
-    local file_age=$(( EPOCHSECONDS - $(stat -c %Y $comp_file 2>/dev/null || stat -f %m $comp_file 2>/dev/null) ))
+    local file_age=$(( EPOCHSECONDS - $(stat -c %Y "$comp_file" 2>/dev/null || stat -f %m "$comp_file" 2>/dev/null) ))
     if (( file_age > 86400 )); then
       local cached_version=${header#\# lazy-completion: version=}
       local current_version=$(eval $ver_cmd 2>/dev/null)
       if [[ $current_version != $cached_version ]]; then
         needs_regen=1
       else
-        touch $comp_file
+        touch "$comp_file"
       fi
     fi
   fi
@@ -28,9 +28,9 @@ else
 fi
 
 if (( needs_regen )); then
-  mkdir -p $comp_dir
+  mkdir -p "$comp_dir"
   local current_version=${current_version:-$(eval $ver_cmd 2>/dev/null)}
-  { echo "# lazy-completion: version=$current_version"; eval $gen_cmd } > $comp_file
+  { echo "# lazy-completion: version=$current_version"; eval $gen_cmd } > "$comp_file"
 fi
 
 # Unregister stub, reload real completion from updated file

@@ -3,7 +3,7 @@ zparseopts -D -E -clean=clean_opt -help=help_opt
 
 # Handle invalid option
 if (( $# > 0 )); then
-  help_opt=true
+  help_opt=("--help")
   echo "Invalid option: $1"
 fi
 
@@ -32,8 +32,9 @@ if [[ -n $clean_opt ]]; then
   zsh -i -c 'exit'
 fi
 
+local branch
 for r in $ZPLUGINDIR/*/*; do
-  local branch=$(git -C "$r" rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)
+  branch=$(git -C "$r" rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)
   if [ "$branch" = "" ]; then
     echo "${r:t2} is locked to a specific tag or commit, skipping update"
     echo

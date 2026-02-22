@@ -2,7 +2,7 @@
 FZF_DEFAULT_COMMAND="rg --hidden --line-number --trim --no-heading --color=always -- ''"
 fzf \
   --ansi \
-  --bind "enter:execute-silent:(code -g $PWD/{1..2})" \
+  --bind "enter:become:(vim +{2} {1})" \
   --bind 'esc:cancel' \
   --delimiter : \
   --nth 1,3.. \

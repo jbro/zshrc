@@ -37,6 +37,7 @@ if [[ -f "${ZDOTDIR}/env/local" ]]; then
 fi
 
 # Setup homebrew
+# doctor: homebrew requires: brew
 if [[ -f /opt/homebrew/bin/brew ]]; then
   # Generated with /opt/homebrew/bin/brew shellenv
   export HOMEBREW_PREFIX="/opt/homebrew";
@@ -52,6 +53,7 @@ if [[ -f /opt/homebrew/bin/brew ]]; then
 fi
 
 # asdf
+# doctor: asdf requires: asdf
 if (( $+commands[asdf] )); then
   export ASDF_GOLANG_MOD_VERSION_ENABLED=true
   export ASDF_DATA_DIR=~/.asdf
@@ -59,11 +61,12 @@ if (( $+commands[asdf] )); then
 fi
 
 # bun
+# doctor: bun requires: bun
 if (( $+commands[bun] )); then
   export PATH=~/.bun/bin:$PATH
 fi
 
-# cargo
+# doctor: cargo requires: cargo
 if (( $+commands[cargo] )); then
   export PATH=~/.cargo/bin:$PATH
 fi

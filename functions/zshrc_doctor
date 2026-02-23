@@ -193,9 +193,9 @@ _doctor_fpath
 _doctor_plugins
 _doctor_compiled
 _doctor_scan "zshrc" "$zsh_dir/.zshrc"
-_doctor_scan "functions" "$zsh_dir"/functions/*(N.)
-_doctor_scan "local" "$zsh_dir"/functions/local/*(N.)
-_doctor_scan "$ostype" "$zsh_dir"/functions/${ostype}/*(N.)
+_doctor_scan "functions" "$zsh_dir"/functions/*~*.zwc(N.)
+_doctor_scan "local" "$zsh_dir"/functions/local/*~*.zwc(N.)
+_doctor_scan "$ostype" "$zsh_dir"/functions/${ostype}/*~*.zwc(N.)
 _doctor_completions
 
 unfunction _doctor_plugins _doctor_path _doctor_fpath _doctor_compiled _doctor_scan _doctor_completions

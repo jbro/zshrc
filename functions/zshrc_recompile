@@ -1,0 +1,19 @@
+# vim: ft=zsh
+# Recompile all function .zwc files unconditionally.
+
+local zsh_dir="${ZDOTDIR:-$HOME/.config/zsh}"
+local ostype="${OSTYPE%%[^a-zA-Z]*}"
+local -a dirs=("$zsh_dir/functions/internal" "$zsh_dir/functions")
+[[ -d "$zsh_dir/functions/$ostype" ]] && dirs+=("$zsh_dir/functions/$ostype")
+[[ -d "$zsh_dir/functions/local" ]] && dirs+=("$zsh_dir/functions/local")
+
+local dir f count=0
+for dir in "${dirs[@]}"; do
+  for f in "$dir"/*(N.); do
+    [[ "$f" == *.zwc ]] && continue
+    zcompile "$f"
+    (( count++ ))
+  done
+done
+
+print "Recompiled $count functions"

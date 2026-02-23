@@ -1,0 +1,19 @@
+# vim: ft=zsh
+# Check if a package manager is available and track it for zshrc_doctor.
+#   add-package-manager <cmd-or-path>
+# Paths (starting with /) are checked with -f, commands with $+commands.
+# Returns 0 if available, 1 if missing. Use with && { ... } to run setup.
+
+if [[ ! -v _package_manager_cmds ]]; then
+  typeset -ga _package_manager_cmds
+fi
+
+local arg=$1
+
+if [[ "$arg" == /* ]]; then
+  _package_manager_cmds+=(${arg:t})
+  [[ -f "$arg" ]]
+else
+  _package_manager_cmds+=($arg)
+  (( $+commands[$arg] ))
+fi

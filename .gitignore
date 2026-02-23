@@ -10,7 +10,7 @@
 *.zwc
 
 # Plugins
-plugins/
+.plugins/
 
 # Local environment variables
 env/local
@@ -19,7 +19,7 @@ env/local
 functions/local/
 
 # Local completions
-completions/local/
+.completions/
 
 # Quick paths
-quick_paths
+env/quick_paths

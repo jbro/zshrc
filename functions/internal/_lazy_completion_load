@@ -1,6 +1,6 @@
 # vim: ft=zsh
 local cmd=$1
-local comp_dir="${ZDOTDIR}/completions/local"
+local comp_dir="${ZDOTDIR}/.completions"
 local comp_file="${comp_dir}/_${cmd}"
 local gen_cmd=${_lazy_comp_gen[$cmd]}
 local ver_cmd=${_lazy_comp_ver[$cmd]}

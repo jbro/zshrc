@@ -12,12 +12,26 @@ fi
 
 # Time plugin and snippet loading in benchmarks
 local start_time=$EPOCHREALTIME
-local plugindir url branch initfile subdir name
+local plugindir url branch initfile subdir requires name
 for var in "$@"; do
   eval "$var"
 done
 
 plugindir="${ZPLUGINDIR}/${url:t2:r}"
+
+# Skip if required command is missing
+if [[ -n "$requires" ]] && (( ! $+commands[$requires] )); then
+  if [[ ! -v _plugin_skipped ]]; then
+    typeset -gA _plugin_skipped
+  fi
+  if [ -n "$subdir" ]; then
+    name="${plugindir:t2}/${subdir:t}"
+  else
+    name="${plugindir:t2}"
+  fi
+  _plugin_skipped[$name]=$requires
+  return 1
+fi
 
 if [ ! -d "$plugindir" ]; then
   echo "Cloning $url into $plugindir"

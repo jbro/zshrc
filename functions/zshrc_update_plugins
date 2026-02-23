@@ -1,6 +1,6 @@
 # vim: ft=zsh
-# doctor: update_zsh_plugins requires: git
-(( $+commands[git] )) || { unfunction update_zsh_plugins; return 0 }
+# doctor: zshrc_update_plugins requires: git
+(( $+commands[git] )) || { unfunction zshrc_update_plugins; return 0 }
 
 zparseopts -D -E -clean=clean_opt -help=help_opt
 
@@ -11,7 +11,7 @@ if (( $# > 0 )); then
 fi
 
 if [[ -n $help_opt ]]; then
-  echo "Usage: update_zsh_plugins [--clean] [--help]"
+  echo "Usage: zshrc_update_plugins [--clean] [--help]"
   echo "  --clean   Remove and re-fetch all plugins instead of updating in place."
   echo "  --help    Show this help message."
   return 1

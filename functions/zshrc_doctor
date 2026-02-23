@@ -1,5 +1,5 @@
 # vim: ft=zsh
-# Scan zshrc and functions/ for doctor annotations
+# Scan zshrc.d/ and functions/ for doctor annotations
 # and report which features are disabled due to missing commands.
 # Also report on PATH, fpath, and completion cache health.
 
@@ -52,41 +52,6 @@ _doctor_fpath() {
   fi
 }
 
-_doctor_scan() {
-  local -a files=("$@")
-  local -a enabled disabled
-  local file line desc cmds cmd missing
-
-  for file in "${files[@]}"; do
-    [[ -f "$file" ]] || continue
-    while IFS= read -r line; do
-      if [[ "$line" =~ '#[[:space:]]*doctor:[[:space:]]*(.+)[[:space:]]+requires:[[:space:]]*(.+)' ]]; then
-        desc="${match[1]%%[[:space:]]requires:*}"
-        cmds="${match[2]}"
-        missing=()
-        for cmd in ${(z)cmds}; do
-          (( $+commands[$cmd] )) || missing+=("$cmd")
-        done
-        if (( ${#missing} )); then
-          disabled+=("${desc} (missing: ${(j:, :)missing})")
-        else
-          enabled+=("$desc")
-        fi
-      fi
-    done < "$file"
-  done
-
-  if (( ${#enabled} )); then
-    for e in "${enabled[@]}"; do
-      print -P "  %F{green}✓%f  $e"
-    done
-  fi
-  if (( ${#disabled} )); then
-    for d in "${disabled[@]}"; do
-      print -P "  %F{yellow}⚠%f  $d"
-    done
-  fi
-}
 
 _doctor_functions() {
   local dir=$1
@@ -139,7 +104,7 @@ _doctor_completions() {
     print -P "  .zcompdump: %F{yellow}missing, will be created next shell%f"
   fi
 
-  local comp_dir="$zsh_dir/completions/local"
+  local comp_dir="$zsh_dir/.completions"
   local cmd comp_file header file_age hours cached_ver current_ver comp_status
   for cmd in ${(k)_lazy_comp_gen}; do
     comp_file="$comp_dir/_${cmd}"
@@ -181,6 +146,12 @@ _doctor_plugins() {
       print "  $p"
     done
   fi
+  if [[ -v _plugin_skipped ]] && (( ${#_plugin_skipped} )); then
+    print -P "\n%B── skipped plugins ──%b"
+    for p in ${(ko)_plugin_skipped}; do
+      print -P "  %F{yellow}⚠%f  $p (missing: ${_plugin_skipped[$p]})"
+    done
+  fi
 }
 
 _doctor_compiled() {
@@ -220,11 +191,33 @@ _doctor_plugins
 _doctor_compiled
 _doctor_completions
 
-# Global: zshrc + functions/
-print -P "\n%B── zshrc ──%b"
-_doctor_scan "$zsh_dir/.zshrc"
+print -P "\n%B── package managers ──%b"
+local pm
+for pm in $_package_manager_cmds; do
+  if (( $+commands[$pm] )); then
+    print -P "  %F{green}✓%f  $pm"
+  else
+    print -P "  %F{yellow}⚠%f  $pm (missing)"
+  fi
+done
+print -P "\n%B── aliases ──%b"
+local name
+for name in ${(ko)_alias_if_cmds}; do
+  local alias_val=${_alias_if_cmds[$name]}
+  local alias_cmd=${alias_val%% *}
+  if (( $+commands[$alias_cmd] )); then
+    print -P "  %F{green}✓%f  $name → $alias_val"
+  else
+    print -P "  %F{yellow}⚠%f  $name (missing: $alias_cmd)"
+  fi
+done
+print -P "\n%B── direnv ──%b"
+if (( $+commands[direnv] )); then
+  print -P "  %F{green}✓%f  direnv hook"
+else
+  print -P "  %F{yellow}⚠%f  direnv hook (missing: direnv)"
+fi
 print -P "\n%B── lazy completions ──%b"
-local cmd
 for cmd in ${(ko)_lazy_comp_gen}; do
   if (( $+commands[$cmd] )); then
     print -P "  %F{green}✓%f  $cmd"
@@ -257,4 +250,4 @@ fi
 print -P "  %Bfunctions/local/%b"
 _doctor_functions "$zsh_dir/functions/local"
 
-unfunction _doctor_plugins _doctor_path _doctor_fpath _doctor_functions _doctor_compiled _doctor_scan _doctor_completions
+unfunction _doctor_plugins _doctor_path _doctor_fpath _doctor_functions _doctor_compiled _doctor_completions

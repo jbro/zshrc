@@ -1,0 +1,14 @@
+# vim: ft=zsh
+# Set an alias only when a command is available.
+#   alias-if <cmd> <alias>=<value>
+# Tracks registrations in $_alias_if_cmds for zshrc_doctor.
+
+if [[ ! -v _alias_if_cmds ]]; then
+  typeset -gA _alias_if_cmds
+fi
+
+local cmd=$1 def=$2
+local name=${def%%=*}
+_alias_if_cmds[$name]=${def#*=}
+(( $+commands[$cmd] )) || return 0
+alias "$def"

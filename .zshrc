@@ -36,41 +36,6 @@ if [[ -f "${ZDOTDIR}/env/local" ]]; then
   source "${ZDOTDIR}/env/local"
 fi
 
-# Setup homebrew
-# doctor: homebrew requires: brew
-if [[ -f /opt/homebrew/bin/brew ]]; then
-  # Generated with /opt/homebrew/bin/brew shellenv
-  export HOMEBREW_PREFIX="/opt/homebrew";
-  export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
-  export HOMEBREW_REPOSITORY="/opt/homebrew";
-  fpath[1,0]="/opt/homebrew/share/zsh/site-functions";
-  path=("/opt/homebrew/bin" "/opt/homebrew/sbin" $path)
-  [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}";
-  export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
-
-  # load homebrew's command not found
-  source $HOMEBREW_REPOSITORY/Library/Homebrew/command-not-found/handler.sh
-fi
-
-# asdf
-# doctor: asdf requires: asdf
-if (( $+commands[asdf] )); then
-  export ASDF_GOLANG_MOD_VERSION_ENABLED=true
-  export ASDF_DATA_DIR=~/.asdf
-  export PATH=$ASDF_DATA_DIR/shims:$PATH
-fi
-
-# bun
-# doctor: bun requires: bun
-if (( $+commands[bun] )); then
-  export PATH=~/.bun/bin:$PATH
-fi
-
-# doctor: cargo requires: cargo
-if (( $+commands[cargo] )); then
-  export PATH=~/.cargo/bin:$PATH
-fi
-
 # Load internal helper functions first (needed by compile step below)
 fpath=("${ZDOTDIR}/functions/internal" $fpath)
 autoload -Uz $fpath[1]/*(.:t)
@@ -82,6 +47,10 @@ autoload -Uz $fpath[1]/*(.:t)
 # Compile all function files to .zwc for faster loading
 _zshrc_compile_funcs "${ZDOTDIR}/functions/internal"
 _zshrc_compile_funcs "${ZDOTDIR}/functions"
+
+# Package managers (after functions are loaded, before plugins need PATH)
+source "${ZDOTDIR}/zshrc.d/package-managers.zsh"
+unset -f add-package-manager
 
 # Lazy load OS specific helper functions
 if [[ -d "${ZDOTDIR}/functions/$_zshrc_ostype/" ]]; then
@@ -98,8 +67,8 @@ if [[ -d "${ZDOTDIR}/functions/local/" ]]; then
 fi
 
 # Load local completions
-if [[ -d "${ZDOTDIR}/completions/local" ]]; then
-  fpath=("${ZDOTDIR}/completions/local" $fpath)
+if [[ -d "${ZDOTDIR}/.completions" ]]; then
+  fpath=("${ZDOTDIR}/.completions" $fpath)
 fi
 
 # Emacs keybindings
@@ -132,6 +101,7 @@ bindkey "^[[A" up-line-or-beginning-search # Up
 bindkey "^[[B" down-line-or-beginning-search # Down
 
 # Alt plus left and right move by word
+WORDCHARS="" # All special characters are now word boundaries
 bindkey "^[[1;3C" forward-word
 bindkey "^[[1;3D" backward-word
 
@@ -162,88 +132,20 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*:commands' rehash 1
 
-# Set up plug-in path
-ZPLUGINDIR="${ZDOTDIR}/plugins"
-
-# Very nice zsh theme
-plugin url='https://github.com/romkatv/powerlevel10k.git' \
-       initfile='powerlevel10k.zsh-theme'
-
-# Fish like suggestion based completion
-WORDCHARS="" # All special characters are now word boundaries for alt+right-arrow
-plugin url='https://github.com/zsh-users/zsh-autosuggestions.git'
-ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-ZSH_AUTOSUGGEST_HISTORY_IGNORE='(cd|ls|vim) *'
-
-# Set the terminal title
-plugin url='https://github.com/olets/zsh-window-title.git'
-
-# Let me know how to get missing commands
-plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
-       subdir='plugins/command-not-found'
-
-# Super easy sudo prefixing
-plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
-       subdir='plugins/sudo'
-
-# Borrow aws plugin from oh-my-zsh
-plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
-       subdir='plugins/aws'
-
-# jq repl
-plugin url='https://github.com/reegnz/jq-zsh-plugin.git'
-
-# enhanced cd
-plugin url='https://github.com/babarot/enhancd.git'
-
-# doctor: fzf integration requires: fzf
-if (( $+commands[fzf] )); then
-export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
-    --color=bg+:#3c3836,bg:#1d2021,spinner:#8ec07c,hl:#83a598 \
-    --color=fg:#bdae93,header:#83a598,info:#fabd2f,pointer:#8ec07c \
-    --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598"
-plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
-       subdir='plugins/fzf'
-fi
-
-# Auto completions (Put plugins with completions we want to use below this)
-plugin url='https://github.com/clarketm/zsh-completions.git'
-
-# Done loading plugins, so we no longer need the plugin function
+# Plugins
+ZPLUGINDIR="${ZDOTDIR}/.plugins"
+source "${ZDOTDIR}/zshrc.d/plugins.zsh"
 unset -f plugin
 
-# doctor: nvim as vim requires: nvim
-if (( $+commands[nvim] )); then
-  alias vim=nvim
-fi
+# Aliases
+source "${ZDOTDIR}/zshrc.d/aliases.zsh"
+unset -f alias-if
 
-# doctor: eza as ls requires: eza
-if (( $+commands[eza] )); then
-  alias ls="eza --classify auto"
-  alias tree="eza --tree"
-fi
-
-# doctor: trash alias requires: trash
-# Delete to trash
-if (( $+commands[trash] )); then
-  alias rm=trash
-fi
-
-# doctor: bat theme requires: bat
-if (( $+commands[bat] )); then
-  alias bat="bat --theme=gruvbox-dark"
-fi
-
-# doctor: gron/ungron aliases requires: gron
-if (( $+commands[gron] )); then
-  alias norg="gron --ungron"
-  alias ungron="gron --ungron"
-fi
-
-# Set up quick cd'ing to project dirs
-if [[ -f "${ZDOTDIR}/quick_paths" ]]; then
-  _zshrc_quick_paths=("${(@f)$(<${ZDOTDIR}/quick_paths)}")
-  for d in $_zshrc_quick_paths; do
+# Quick paths — directories in env/quick_paths are added to cdpath
+if [[ -f "${ZDOTDIR}/env/quick_paths" ]]; then
+  local -a _quick_paths=("${(@f)$(<${ZDOTDIR}/env/quick_paths)}")
+  local d
+  for d in $_quick_paths; do
     if [[ -d ${~d} ]]; then
       cdpath+=${~d}
     fi
@@ -251,14 +153,10 @@ if [[ -f "${ZDOTDIR}/quick_paths" ]]; then
 fi
 
 # Lazy completions
-lazy-completion gh "gh completion -s zsh" "gh --version"
-lazy-completion kubectl "kubectl completion zsh" "kubectl version --client --short"
-lazy-completion task "task --completion zsh" "task --version"
-lazy-completion docker "docker completion zsh" "docker --version"
-lazy-completion flux "flux completion zsh" "flux --version"
+source "${ZDOTDIR}/zshrc.d/lazy-completions.zsh"
 unset -f lazy-completion
 
-# doctor: direnv hook requires: direnv
+# direnv
 (( ${+commands[direnv]} )) && eval "$(direnv hook zsh)"
 
 # To customize prompt, run `p10k configure` or edit ${ZDOTDIR}/.p10k.zsh.

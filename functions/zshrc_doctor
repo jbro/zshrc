@@ -3,6 +3,7 @@
 # and report which features are disabled due to missing commands.
 # Also report on PATH, fpath, and completion cache health.
 
+setopt LOCAL_OPTIONS EXTENDED_GLOB
 local zsh_dir="${ZDOTDIR:-$HOME/.config/zsh}"
 local ostype="${OSTYPE%%[^a-zA-Z]*}"
 local max_age=72000 # 20 hours in seconds
@@ -52,7 +53,6 @@ _doctor_fpath() {
 }
 
 _doctor_scan() {
-  local label=$1; shift
   local -a files=("$@")
   local -a enabled disabled
   local file line desc cmds cmd missing
@@ -76,9 +76,6 @@ _doctor_scan() {
     done < "$file"
   done
 
-  (( ${#enabled} + ${#disabled} )) || return
-
-  print -P "\n%B── ${label} ──%b"
   if (( ${#enabled} )); then
     for e in "${enabled[@]}"; do
       print -P "  %F{green}✓%f  $e"
@@ -91,10 +88,39 @@ _doctor_scan() {
   fi
 }
 
-_doctor_completions() {
-  print -P "\n%B── completions ──%b"
+_doctor_functions() {
+  local dir=$1
+  local -a files
+  local f line desc cmds cmd missing has_annotation
+  for f in "$dir"/*~*.zwc(N.); do
+    files+=("$f")
+  done
+  (( ${#files} )) || return
+  for f in "${files[@]}"; do
+    has_annotation=0
+    while IFS= read -r line; do
+      if [[ "$line" =~ '#[[:space:]]*doctor:[[:space:]]*(.+)[[:space:]]+requires:[[:space:]]*(.+)' ]]; then
+        desc="${match[1]%%[[:space:]]requires:*}"
+        cmds="${match[2]}"
+        missing=()
+        for cmd in ${(z)cmds}; do
+          (( $+commands[$cmd] )) || missing+=("$cmd")
+        done
+        if (( ${#missing} )); then
+          print -P "  %F{yellow}⚠%f  ${f:t} (missing: ${(j:, :)missing})"
+        else
+          print -P "  %F{green}✓%f  ${f:t}"
+        fi
+        has_annotation=1
+        break
+      fi
+    done < "$f"
+    (( has_annotation )) || print -P "  %F{8}·%f  ${f:t}"
+  done
+}
 
-  # compinit dump
+_doctor_comp_cache() {
+  print -P "\n%B── completion cache ──%b"
   local dump="$zsh_dir/.zcompdump"
   if [[ -f "$dump" ]]; then
     local dump_age=$(( EPOCHSECONDS - $(stat -c %Y "$dump" 2>/dev/null || stat -f %m "$dump" 2>/dev/null) ))
@@ -111,14 +137,16 @@ _doctor_completions() {
   else
     print -P "  .zcompdump: %F{yellow}missing, will be created next shell%f"
   fi
+}
 
-  # Lazy completions
+_doctor_lazy_completions() {
+  print -P "\n%B── lazy completions ──%b"
   local comp_dir="$zsh_dir/completions/local"
   local cmd comp_file header file_age hours cached_ver current_ver comp_status
   for cmd in ${(k)_lazy_comp_gen}; do
     comp_file="$comp_dir/_${cmd}"
     if [[ ! -f "$comp_file" ]]; then
-      print -P "  _${cmd}: %F{yellow}not cached, will generate on first use%f"
+      print -P "  ${cmd}: %F{yellow}not cached, will generate on first use%f"
       continue
     fi
 
@@ -136,9 +164,9 @@ _doctor_completions() {
       else
         comp_status="%F{green}fresh%f"
       fi
-      print -P "  _${cmd}: ${hours}h old — ${comp_status}"
+      print -P "  ${cmd}: ${hours}h old — ${comp_status}"
     else
-      print -P "  _${cmd}: ${hours}h old — not managed by lazy-completion"
+      print -P "  ${cmd}: ${hours}h old — not managed by lazy-completion"
     fi
   done
 }
@@ -192,10 +220,36 @@ _doctor_path
 _doctor_fpath
 _doctor_plugins
 _doctor_compiled
-_doctor_scan "zshrc" "$zsh_dir/.zshrc"
-_doctor_scan "functions" "$zsh_dir"/functions/*~*.zwc(N.)
-_doctor_scan "local" "$zsh_dir"/functions/local/*~*.zwc(N.)
-_doctor_scan "$ostype" "$zsh_dir"/functions/${ostype}/*~*.zwc(N.)
-_doctor_completions
 
-unfunction _doctor_plugins _doctor_path _doctor_fpath _doctor_compiled _doctor_scan _doctor_completions
+# Global: zshrc + functions/
+print -P "\n%B── zshrc ──%b"
+_doctor_scan "$zsh_dir/.zshrc"
+print -P "\n%B── functions ──%b"
+_doctor_functions "$zsh_dir/functions"
+
+# OS-specific: env/<ostype> + functions/<ostype>/
+print -P "\n%B── OS: $ostype ──%b"
+print -P "  %Benv/$ostype%b"
+if [[ -f "$zsh_dir/env/$ostype" ]]; then
+  print -P "  %F{green}✓%f  loaded"
+else
+  print -P "  %F{8}·%f  not present"
+fi
+print -P "  %Bfunctions/$ostype/%b"
+_doctor_functions "$zsh_dir/functions/$ostype"
+
+# Local: env/local + functions/local/
+print -P "\n%B── local ──%b"
+print -P "  %Benv/local%b"
+if [[ -f "$zsh_dir/env/local" ]]; then
+  print -P "  %F{green}✓%f  loaded"
+else
+  print -P "  %F{8}·%f  not present"
+fi
+print -P "  %Bfunctions/local/%b"
+_doctor_functions "$zsh_dir/functions/local"
+
+_doctor_comp_cache
+_doctor_lazy_completions
+
+unfunction _doctor_plugins _doctor_path _doctor_fpath _doctor_functions _doctor_compiled _doctor_scan _doctor_comp_cache _doctor_lazy_completions

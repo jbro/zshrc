@@ -200,6 +200,27 @@ for pm in $_package_manager_cmds; do
     print -P "  %F{yellow}⚠%f  $pm (missing)"
   fi
 done
+
+print -P "\n%B── quick paths ──%b"
+local quick_paths_file="$zsh_dir/env/quick_paths"
+if [[ -f "$quick_paths_file" ]]; then
+  local -a quick_paths=("${(@f)$(<"$quick_paths_file")}")
+  local qp
+  if (( ${#quick_paths} == 0 )); then
+    print -P "  %F{8}·%f  no entries"
+  else
+    for qp in $quick_paths; do
+      if [[ -d ${~qp} ]]; then
+        print -P "  %F{green}✓%f  $qp"
+      else
+        print -P "  %F{yellow}⚠%f  $qp (missing)"
+      fi
+    done
+  fi
+else
+  print -P "  %F{8}·%f  env/quick_paths not present"
+fi
+
 print -P "\n%B── aliases ──%b"
 local name
 for name in ${(ko)_alias_if_cmds}; do

@@ -119,8 +119,9 @@ _doctor_functions() {
   done
 }
 
-_doctor_comp_cache() {
-  print -P "\n%B── completion cache ──%b"
+_doctor_completions() {
+  print -P "\n%B── completions ──%b"
+
   local dump="$zsh_dir/.zcompdump"
   if [[ -f "$dump" ]]; then
     local dump_age=$(( EPOCHSECONDS - $(stat -c %Y "$dump" 2>/dev/null || stat -f %m "$dump" 2>/dev/null) ))
@@ -137,16 +138,13 @@ _doctor_comp_cache() {
   else
     print -P "  .zcompdump: %F{yellow}missing, will be created next shell%f"
   fi
-}
 
-_doctor_lazy_completions() {
-  print -P "\n%B── lazy completions ──%b"
   local comp_dir="$zsh_dir/completions/local"
   local cmd comp_file header file_age hours cached_ver current_ver comp_status
   for cmd in ${(k)_lazy_comp_gen}; do
     comp_file="$comp_dir/_${cmd}"
     if [[ ! -f "$comp_file" ]]; then
-      print -P "  ${cmd}: %F{yellow}not cached, will generate on first use%f"
+      print -P "  _${cmd}: %F{yellow}not cached, will generate on first use%f"
       continue
     fi
 
@@ -164,9 +162,9 @@ _doctor_lazy_completions() {
       else
         comp_status="%F{green}fresh%f"
       fi
-      print -P "  ${cmd}: ${hours}h old — ${comp_status}"
+      print -P "  _${cmd}: ${hours}h old — ${comp_status}"
     else
-      print -P "  ${cmd}: ${hours}h old — not managed by lazy-completion"
+      print -P "  _${cmd}: ${hours}h old — not managed by lazy-completion"
     fi
   done
 }
@@ -220,10 +218,20 @@ _doctor_path
 _doctor_fpath
 _doctor_plugins
 _doctor_compiled
+_doctor_completions
 
 # Global: zshrc + functions/
 print -P "\n%B── zshrc ──%b"
 _doctor_scan "$zsh_dir/.zshrc"
+print -P "\n%B── lazy completions ──%b"
+local cmd
+for cmd in ${(ko)_lazy_comp_gen}; do
+  if (( $+commands[$cmd] )); then
+    print -P "  %F{green}✓%f  $cmd"
+  else
+    print -P "  %F{yellow}⚠%f  $cmd (missing)"
+  fi
+done
 print -P "\n%B── functions ──%b"
 _doctor_functions "$zsh_dir/functions"
 
@@ -249,7 +257,4 @@ fi
 print -P "  %Bfunctions/local/%b"
 _doctor_functions "$zsh_dir/functions/local"
 
-_doctor_comp_cache
-_doctor_lazy_completions
-
-unfunction _doctor_plugins _doctor_path _doctor_fpath _doctor_functions _doctor_compiled _doctor_scan _doctor_comp_cache _doctor_lazy_completions
+unfunction _doctor_plugins _doctor_path _doctor_fpath _doctor_functions _doctor_compiled _doctor_scan _doctor_completions

@@ -251,9 +251,7 @@ if [[ -f "${ZDOTDIR}/quick_paths" ]]; then
 fi
 
 # Lazy completions
-# doctor: gh completions requires: gh
 lazy-completion gh "gh completion -s zsh" "gh --version"
-# doctor: kubectl completions requires: kubectl
 lazy-completion kubectl "kubectl completion zsh" "kubectl version --client --short"
 unset -f lazy-completion
 

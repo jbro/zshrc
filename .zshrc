@@ -121,7 +121,7 @@ setopt INTERACTIVE_COMMENTS
 setopt AUTOCD
 
 # Apply gruvbox dark theme to ls and friends (generated with: vivid generate gruvbox-dark)
-export LS_COLORS=$(<~/.config/zsh/lscolors-gruvbox)
+export LS_COLORS=$(<${ZDOTDIR}/theme/lscolors-gruvbox)
 
 # When pressing up limit history to prefix
 autoload -U up-line-or-beginning-search

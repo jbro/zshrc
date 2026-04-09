@@ -16,27 +16,63 @@ local usage="Usage: git-private <command>
   show          Show commit details in the private repo"
 
 local marker='# git-private: managed directory'
+local git_dir_name='.git-private'
 
-# Find repo root
-local repo_root
-repo_root=$(git rev-parse --show-toplevel 2>/dev/null) || {
-  echo "git-private: not inside a git repository" >&2
+# Walk up from a directory looking for .git-private
+_git_private_find_root() {
+  local dir="${1:-$PWD}"
+  while [[ "$dir" != "/" ]]; do
+    if [[ -d "$dir/$git_dir_name" ]]; then
+      echo "$dir"
+      return 0
+    fi
+    dir="${dir:h}"
+  done
   return 1
 }
 
-# Resolve private directory from .gitignore annotation
-_git_private_dir() {
+# Run git against a .git-private work tree
+_git_private_cmd() {
+  local work_tree="$1"; shift
+  git --git-dir="$work_tree/$git_dir_name" --work-tree="$work_tree" "$@"
+}
+
+# Find repo root of the *outer* (normal) git repo
+_git_private_outer_root() {
+  git rev-parse --show-toplevel 2>/dev/null
+}
+
+# Resolve private directory from .gitignore annotation in the outer repo
+_git_private_dir_from_gitignore() {
+  local repo_root="$1"
   local gitignore="$repo_root/.gitignore"
   [[ -f "$gitignore" ]] || return 1
   local next=0
   while IFS= read -r line; do
     if (( next )); then
-      # Strip trailing slash and whitespace
       echo "${line%%/}"
       return 0
     fi
     [[ "$line" = "$marker" ]] && next=1
   done < "$gitignore"
+  return 1
+}
+
+# Resolve the private work-tree, checking two cases:
+#   1. We are *inside* a directory that contains .git-private (walk up)
+#   2. We are in the outer repo and .gitignore points to the private dir
+_git_private_resolve() {
+  # Case 1: standing inside the private work tree
+  local root
+  root=$(_git_private_find_root) && { echo "$root"; return 0 }
+
+  # Case 2: standing in the outer repo, look up via .gitignore
+  local outer
+  outer=$(_git_private_outer_root) || return 1
+  local private_rel
+  private_rel=$(_git_private_dir_from_gitignore "$outer") || return 1
+  local full="$outer/$private_rel"
+  [[ -d "$full/$git_dir_name" ]] && { echo "$full"; return 0 }
   return 1
 }
 
@@ -46,22 +82,28 @@ shift 2>/dev/null
 case "$cmd" in
   init)
     local private_path="${1:-private}"
-    private_path="${private_path%%/}"  # strip trailing slash
+    private_path="${private_path%%/}"
+
+    # Need outer repo context for init
+    local repo_root
+    repo_root=$(_git_private_outer_root) || {
+      echo "git-private: not inside a git repository" >&2
+      return 1
+    }
+
     local full_path="$repo_root/$private_path"
 
-    if [[ -d "$full_path/.git" ]]; then
+    if [[ -d "$full_path/$git_dir_name" ]]; then
       echo "git-private: $private_path is already initialized" >&2
       return 1
     fi
 
-    # Create directory
     mkdir -p "$full_path"
 
     # Add to .gitignore with annotation marker (skip if already present)
     local gitignore="$repo_root/.gitignore"
     if ! grep -qF "$marker" "$gitignore" 2>/dev/null; then
       if [[ -f "$gitignore" ]]; then
-        # Append with a blank line separator if file doesn't end with one
         [[ -z "$(tail -c 1 "$gitignore")" ]] || echo >> "$gitignore"
         echo >> "$gitignore"
       fi
@@ -69,31 +111,26 @@ case "$cmd" in
       echo "$private_path/" >> "$gitignore"
     fi
 
-    # Initialize git repo inside
-    git -C "$full_path" init --quiet
+    # Initialize with non-standard git dir so plain git ignores it
+    git init --quiet --separate-git-dir="$full_path/$git_dir_name" "$full_path"
 
-    # Create a .gitignore inside the private repo
+    # git init --separate-git-dir leaves a .git *file* (gitdir pointer) — remove it
+    rm -f "$full_path/.git"
+
     echo '*.zwc' > "$full_path/.gitignore"
 
-    echo "Initialized private repo at $private_path/"
+    echo "Initialized private repo at $private_path/ (using $git_dir_name)"
     ;;
 
   status|add|commit|diff|log|stash|restore|reset|show)
-    local private_dir
-    private_dir=$(_git_private_dir) || {
-      echo "git-private: no private directory found in .gitignore" >&2
-      echo "Run 'git-private init' to create one" >&2
+    local work_tree
+    work_tree=$(_git_private_resolve) || {
+      echo "git-private: no private repo found" >&2
+      echo "Run 'git-private init' inside an outer git repo to create one" >&2
       return 1
     }
 
-    local full_path="$repo_root/$private_dir"
-    if [[ ! -d "$full_path/.git" ]]; then
-      echo "git-private: $private_dir exists but is not a git repo" >&2
-      echo "Run 'git-private init $private_dir' to initialize it" >&2
-      return 1
-    fi
-
-    git -C "$full_path" "$cmd" "$@"
+    _git_private_cmd "$work_tree" "$cmd" "$@"
     ;;
 
   help|-h|--help)

@@ -23,17 +23,15 @@ _zshrc_bench_prompt=$EPOCHREALTIME
 typeset -U path
 
 # Environment variables
-export EDITOR=vim
-
-# Source os env variables
+source "${ZDOTDIR}/env/common"
 _zshrc_ostype=${OSTYPE%%[^a-zA-Z]*}
 if [[ -f "${ZDOTDIR}/env/$_zshrc_ostype" ]]; then
   source "${ZDOTDIR}/env/$_zshrc_ostype"
 fi
 
 # Source local env variables
-if [[ -f "${ZDOTDIR}/env/local" ]]; then
-  source "${ZDOTDIR}/env/local"
+if [[ -f "${ZDOTDIR}/local/env" ]]; then
+  source "${ZDOTDIR}/local/env"
 fi
 
 # Load internal helper functions first (needed by compile step below)
@@ -48,22 +46,18 @@ autoload -Uz $fpath[1]/*(-.:t)
 _zshrc_compile_funcs "${ZDOTDIR}/functions/internal"
 _zshrc_compile_funcs "${ZDOTDIR}/functions"
 
-# Package managers (after functions are loaded, before plugins need PATH)
-source "${ZDOTDIR}/zshrc.d/package-managers.zsh"
-unset -f add-package-manager
-
 # Lazy load OS specific helper functions
 if [[ -d "${ZDOTDIR}/functions/$_zshrc_ostype/" ]]; then
   fpath=("${ZDOTDIR}/functions/$_zshrc_ostype/" $fpath)
-  autoload -Uz $fpath[1]/*(-.:t)
   _zshrc_compile_funcs "${ZDOTDIR}/functions/$_zshrc_ostype"
+  autoload -Uz $fpath[1]/*(-.:t)
 fi
 
 # Lazy load local helper function
-if [[ -d "${ZDOTDIR}/functions/local/" ]]; then
-  fpath=("${ZDOTDIR}/functions/local/" $fpath)
+if [[ -d "${ZDOTDIR}/local/functions/" ]]; then
+  fpath=("${ZDOTDIR}/local/functions/" $fpath)
   autoload -Uz $fpath[1]/*(-.:t)
-  _zshrc_compile_funcs "${ZDOTDIR}/functions/local"
+  _zshrc_compile_funcs "${ZDOTDIR}/local/functions"
 fi
 
 # Load local completions
@@ -132,29 +126,29 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*:commands' rehash 1
 
-# Plugins
+# Source config files sorted globally by filename (numeric prefix controls order)
 ZPLUGINDIR="${ZDOTDIR}/.plugins"
-source "${ZDOTDIR}/zshrc.d/plugins.zsh"
-unset -f plugin
+typeset -a _zshrc_configs=()
+_zshrc_configs+=("${ZDOTDIR}"/config/*.zsh(N))
+[[ -d "${ZDOTDIR}/config/$_zshrc_ostype" ]] && \
+  _zshrc_configs+=("${ZDOTDIR}"/config/$_zshrc_ostype/*.zsh(N))
+[[ -d "${ZDOTDIR}/local/config" ]] && \
+  _zshrc_configs+=("${ZDOTDIR}"/local/config/*.zsh(N))
 
-# Aliases
-source "${ZDOTDIR}/zshrc.d/aliases.zsh"
-unset -f alias-if
+# Sort by basename
+typeset -a _zshrc_sorted=()
+while IFS= read -r _zshrc_conf; do
+  _zshrc_sorted+=("${_zshrc_conf#* }")
+done < <(for c in $_zshrc_configs; do echo "${c:t} $c"; done | sort)
 
-# Quick paths — directories in env/quick_paths are added to cdpath
-if [[ -f "${ZDOTDIR}/env/quick_paths" ]]; then
-  local -a _quick_paths=("${(@f)$(<${ZDOTDIR}/env/quick_paths)}")
-  local d
-  for d in $_quick_paths; do
-    if [[ -d ${~d} ]]; then
-      cdpath+=${~d}
-    fi
-  done
-fi
+typeset -ga zsh_loaded_configs=()
+for _zshrc_conf in $_zshrc_sorted; do
+  source "$_zshrc_conf"
+  zsh_loaded_configs+=("$_zshrc_conf")
+done
 
-# Lazy completions
-source "${ZDOTDIR}/zshrc.d/lazy-completions.zsh"
-unset -f lazy-completion
+# Clean up config-only internal functions
+unset -f add-package-manager alias-if lazy-completion plugin quick-path
 
 # direnv
 (( ${+commands[direnv]} )) && eval "$(direnv hook zsh)"

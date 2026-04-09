@@ -12,14 +12,8 @@
 # Plugins
 .plugins/
 
-# Local environment variables
-env/local
-
-# Local functions
-functions/local/
-
-# Local completions
+# Cached completions
 .completions/
 
-# Quick paths
-env/quick_paths
+# git-private: managed directory
+local/

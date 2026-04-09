@@ -1,0 +1,8 @@
+# vim: ft=zsh
+# Add a directory to cdpath for quick cd access.
+#   quick-path <dir>
+# Tilde and glob expansion is performed on the path.
+# Silently skips directories that don't exist.
+
+local dir=${~1}
+[[ -d "$dir" ]] && cdpath+="$dir"

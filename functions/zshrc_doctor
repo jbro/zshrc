@@ -1,5 +1,5 @@
 # vim: ft=zsh
-# Scan zshrc.d/ and functions/ for doctor annotations
+# Scan config/ and functions/ for doctor annotations
 # and report which features are disabled due to missing commands.
 # Also report on PATH, fpath, and completion cache health.
 
@@ -157,7 +157,7 @@ _doctor_plugins() {
 _doctor_compiled() {
   local -a dirs=("$zsh_dir/functions" "$zsh_dir/functions/internal")
   [[ -d "$zsh_dir/functions/$ostype" ]] && dirs+=("$zsh_dir/functions/$ostype")
-  [[ -d "$zsh_dir/functions/local" ]] && dirs+=("$zsh_dir/functions/local")
+  [[ -d "$zsh_dir/local/functions" ]] && dirs+=("$zsh_dir/local/functions")
 
   local -a stale missing
   local dir f
@@ -191,6 +191,12 @@ _doctor_plugins
 _doctor_compiled
 _doctor_completions
 
+print -P "\n%B── config load order ──%b"
+local conf
+for conf in $zsh_loaded_configs; do
+  print "  ${conf#$zsh_dir/}"
+done
+
 print -P "\n%B── package managers ──%b"
 local pm
 for pm in $_package_manager_cmds; do
@@ -201,24 +207,18 @@ for pm in $_package_manager_cmds; do
   fi
 done
 
-print -P "\n%B── quick paths ──%b"
-local quick_paths_file="$zsh_dir/env/quick_paths"
-if [[ -f "$quick_paths_file" ]]; then
-  local -a quick_paths=("${(@f)$(<"$quick_paths_file")}")
-  local qp
-  if (( ${#quick_paths} == 0 )); then
-    print -P "  %F{8}·%f  no entries"
-  else
-    for qp in $quick_paths; do
-      if [[ -d ${~qp} ]]; then
-        print -P "  %F{green}✓%f  $qp"
-      else
-        print -P "  %F{yellow}⚠%f  $qp (missing)"
-      fi
-    done
-  fi
+print -P "\n%B── quick paths (cdpath) ──%b"
+if (( ${#cdpath} == 0 )); then
+  print -P "  %F{8}·%f  no entries"
 else
-  print -P "  %F{8}·%f  env/quick_paths not present"
+  local qp
+  for qp in $cdpath; do
+    if [[ -d "$qp" ]]; then
+      print -P "  %F{green}✓%f  $qp"
+    else
+      print -P "  %F{yellow}⚠%f  $qp (missing)"
+    fi
+  done
 fi
 
 print -P "\n%B── aliases ──%b"
@@ -260,15 +260,15 @@ fi
 print -P "  %Bfunctions/$ostype/%b"
 _doctor_functions "$zsh_dir/functions/$ostype"
 
-# Local: env/local + functions/local/
+# Local: local/env + local/functions/
 print -P "\n%B── local ──%b"
-print -P "  %Benv/local%b"
-if [[ -f "$zsh_dir/env/local" ]]; then
+print -P "  %Blocal/env%b"
+if [[ -f "$zsh_dir/local/env" ]]; then
   print -P "  %F{green}✓%f  loaded"
 else
   print -P "  %F{8}·%f  not present"
 fi
-print -P "  %Bfunctions/local/%b"
-_doctor_functions "$zsh_dir/functions/local"
+print -P "  %Blocal/functions/%b"
+_doctor_functions "$zsh_dir/local/functions"
 
 unfunction _doctor_plugins _doctor_path _doctor_fpath _doctor_functions _doctor_compiled _doctor_completions

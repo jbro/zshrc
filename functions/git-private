@@ -1,0 +1,108 @@
+# vim: ft=zsh
+# doctor: git-private requires: git
+
+(( $+commands[git] )) || { unfunction git-private; return 0 }
+
+local usage="Usage: git-private <command>
+  init [path]   Initialize a private repo (default: private/)
+  status        Show status of private repo (default when no command given)
+  add           Stage files in the private repo
+  commit        Commit staged changes in the private repo
+  diff          Show diffs in the private repo
+  log           Show commit log of the private repo
+  stash         Manage stash in the private repo
+  restore       Restore files in the private repo
+  reset         Reset staged changes in the private repo
+  show          Show commit details in the private repo"
+
+local marker='# git-private: managed directory'
+
+# Find repo root
+local repo_root
+repo_root=$(git rev-parse --show-toplevel 2>/dev/null) || {
+  echo "git-private: not inside a git repository" >&2
+  return 1
+}
+
+# Resolve private directory from .gitignore annotation
+_git_private_dir() {
+  local gitignore="$repo_root/.gitignore"
+  [[ -f "$gitignore" ]] || return 1
+  local next=0
+  while IFS= read -r line; do
+    if (( next )); then
+      # Strip trailing slash and whitespace
+      echo "${line%%/}"
+      return 0
+    fi
+    [[ "$line" = "$marker" ]] && next=1
+  done < "$gitignore"
+  return 1
+}
+
+local cmd="${1:-status}"
+shift 2>/dev/null
+
+case "$cmd" in
+  init)
+    local private_path="${1:-private}"
+    private_path="${private_path%%/}"  # strip trailing slash
+    local full_path="$repo_root/$private_path"
+
+    if [[ -d "$full_path/.git" ]]; then
+      echo "git-private: $private_path is already initialized" >&2
+      return 1
+    fi
+
+    # Create directory
+    mkdir -p "$full_path"
+
+    # Add to .gitignore with annotation marker (skip if already present)
+    local gitignore="$repo_root/.gitignore"
+    if ! grep -qF "$marker" "$gitignore" 2>/dev/null; then
+      if [[ -f "$gitignore" ]]; then
+        # Append with a blank line separator if file doesn't end with one
+        [[ -z "$(tail -c 1 "$gitignore")" ]] || echo >> "$gitignore"
+        echo >> "$gitignore"
+      fi
+      echo "$marker" >> "$gitignore"
+      echo "$private_path/" >> "$gitignore"
+    fi
+
+    # Initialize git repo inside
+    git -C "$full_path" init --quiet
+
+    # Create a .gitignore inside the private repo
+    echo '*.zwc' > "$full_path/.gitignore"
+
+    echo "Initialized private repo at $private_path/"
+    ;;
+
+  status|add|commit|diff|log|stash|restore|reset|show)
+    local private_dir
+    private_dir=$(_git_private_dir) || {
+      echo "git-private: no private directory found in .gitignore" >&2
+      echo "Run 'git-private init' to create one" >&2
+      return 1
+    }
+
+    local full_path="$repo_root/$private_dir"
+    if [[ ! -d "$full_path/.git" ]]; then
+      echo "git-private: $private_dir exists but is not a git repo" >&2
+      echo "Run 'git-private init $private_dir' to initialize it" >&2
+      return 1
+    fi
+
+    git -C "$full_path" "$cmd" "$@"
+    ;;
+
+  help|-h|--help)
+    echo "$usage"
+    ;;
+
+  *)
+    echo "git-private: unknown command '$cmd'" >&2
+    echo "$usage" >&2
+    return 1
+    ;;
+esac

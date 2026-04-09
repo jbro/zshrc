@@ -7,3 +7,4 @@ lazy-completion kubectl "kubectl completion zsh" "kubectl version --client --sho
 lazy-completion task "task --completion zsh" "task --version"
 lazy-completion docker "docker completion zsh" "docker --version"
 lazy-completion flux "flux completion zsh" "flux --version"
+lazy-completion op "op completion zsh" "op --version"

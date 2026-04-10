@@ -1,0 +1,70 @@
+#compdef git-private
+# vim: ft=zsh
+
+local -a subcommands=(
+  'init:Initialize a private repo'
+  'status:Show status of private repo'
+  'add:Stage files in the private repo'
+  'commit:Commit staged changes in the private repo'
+  'diff:Show diffs in the private repo'
+  'log:Show commit log of the private repo'
+  'stash:Manage stash in the private repo'
+  'restore:Restore files in the private repo'
+  'reset:Reset staged changes in the private repo'
+  'show:Show commit details in the private repo'
+  'help:Show usage information'
+)
+
+if (( CURRENT == 2 )); then
+  _describe -t commands 'git-private command' subcommands
+  return
+fi
+
+local subcmd="${words[2]}"
+case "$subcmd" in
+  status|add|commit|diff|log|stash|restore|reset|show)
+    # Resolve the private repo so _git completions query the right repo
+    local git_dir_name='.git-private'
+    local work_tree
+    local dir="$PWD"
+    while [[ "$dir" != "/" ]]; do
+      if [[ -d "$dir/$git_dir_name" ]]; then
+        work_tree="$dir"
+        break
+      fi
+      dir="${dir:h}"
+    done
+
+    if [[ -z "$work_tree" ]]; then
+      # Try via .gitignore marker in outer repo
+      local marker='# git-private: managed directory'
+      local outer
+      outer=$(git rev-parse --show-toplevel 2>/dev/null)
+      if [[ -n "$outer" && -f "$outer/.gitignore" ]]; then
+        local next=0 line
+        while IFS= read -r line; do
+          if (( next )); then
+            local candidate="$outer/${line%%/}"
+            [[ -d "$candidate/$git_dir_name" ]] && work_tree="$candidate"
+            break
+          fi
+          [[ "$line" = "$marker" ]] && next=1
+        done < "$outer/.gitignore"
+      fi
+    fi
+
+    # Rewrite command line as "git <subcmd> ..." and delegate to _git
+    words=(git "${words[2,-1]}")
+    (( CURRENT-- ))
+
+    # Point git at the private repo for accurate file/ref completions
+    if [[ -n "$work_tree" ]]; then
+      GIT_DIR="$work_tree/$git_dir_name" GIT_WORK_TREE="$work_tree" _git
+    else
+      _git
+    fi
+    ;;
+  init)
+    _directories
+    ;;
+esac

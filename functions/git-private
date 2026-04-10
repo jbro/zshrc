@@ -117,7 +117,7 @@ case "$cmd" in
     # git init --separate-git-dir leaves a .git *file* (gitdir pointer) — remove it
     rm -f "$full_path/.git"
 
-    echo '*.zwc' > "$full_path/.gitignore"
+    echo '.git-private/' > "$full_path/.gitignore"
 
     echo "Initialized private repo at $private_path/ (using $git_dir_name)"
     ;;

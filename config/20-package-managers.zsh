@@ -10,4 +10,6 @@ add-package-manager asdf && {
 
 add-package-manager bun && { export PATH=~/.bun/bin:$PATH }
 
+add-package-manager rustup && { path=(${commands[rustup]:A:h} $path) }
+
 add-package-manager cargo && { export PATH=~/.cargo/bin:$PATH }

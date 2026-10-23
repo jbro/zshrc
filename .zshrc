@@ -60,10 +60,9 @@ if [[ -d "${ZDOTDIR}/local/functions/" ]]; then
   _zshrc_compile_funcs "${ZDOTDIR}/local/functions"
 fi
 
-# Load local completions
-if [[ -d "${ZDOTDIR}/.completions" ]]; then
-  fpath=("${ZDOTDIR}/.completions" $fpath)
-fi
+# Load local completions. Keep this path available before the cache exists so
+# lazy completions generated later in startup can be autoloaded immediately.
+fpath=("${ZDOTDIR}/.completions" $fpath)
 
 # Emacs keybindings
 bindkey -e
@@ -98,33 +97,6 @@ bindkey "^[[B" down-line-or-beginning-search # Down
 WORDCHARS="" # All special characters are now word boundaries
 bindkey "^[[1;3C" forward-word
 bindkey "^[[1;3D" backward-word
-
-# Optimize completion cache about once per day
-autoload -Uz compinit
-_zshrc_bench_comp_start=$EPOCHREALTIME
-setopt EXTENDEDGLOB
-if [[ ${ZDOTDIR}/.zcompdump(#qN.mh-20) ]]; then
-  compinit -C
-else
-  rm -f "${ZDOTDIR}/.zcompdump" "${ZDOTDIR}/.zwc"
-  compinit
-  zcompile "${ZDOTDIR}/.zcompdump"
-  touch "${ZDOTDIR}/.zcompdump"
-fi
-unsetopt EXTENDEDGLOB
-_zshrc_bench_comp_end=$EPOCHREALTIME
-
-# Set up completion style like I want it
-zstyle ':completion:*' completer _extensions _complete _approximate
-zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "$ZDOTDIR/.zcompcache"
-zstyle ':completion:*' menu select
-zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
-zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
-zstyle ':completion:*:commands' rehash 1
 
 # Source config files sorted globally by filename (numeric prefix controls order)
 ZPLUGINDIR="${ZDOTDIR}/.plugins"

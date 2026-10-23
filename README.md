@@ -35,6 +35,8 @@ Config files from all three scopes (`config/`, `config/<ostype>/`, `local/config
 
     config/darwin/10-package-managers.zsh   # homebrew PATH setup
     config/20-package-managers.zsh          # asdf, bun, cargo (need PATH from above)
+    config/25-completion-plugins.zsh
+    config/29-completions.zsh               # compinit after completion paths are registered
     config/30-plugins.zsh
     config/40-aliases.zsh
     config/50-lazy-completions.zsh
@@ -70,7 +72,7 @@ Config files in `config/` use helper functions from `functions/internal/`. These
 
 ## Shell settings
 
-Keybindings (emacs mode, alt+arrow word navigation, up/down history prefix search), history, completion styles, direnv integration, and p10k prompt customization are configured directly in `.zshrc`.
+Keybindings (emacs mode, alt+arrow word navigation, up/down history prefix search), history, direnv integration, and p10k prompt customization are configured directly in `.zshrc`. Completion initialization and styles are configured in `config/29-completions.zsh`.
 
 ## Writing functions
 

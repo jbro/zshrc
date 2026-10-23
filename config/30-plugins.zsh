@@ -42,6 +42,3 @@ plugin url='https://github.com/ohmyzsh/ohmyzsh.git' \
       --color=fg:#bdae93,header:#83a598,info:#fabd2f,pointer:#8ec07c \
       --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598"
 }
-
-# Auto completions (Put plugins with completions we want to use below this)
-plugin url='https://github.com/clarketm/zsh-completions.git'

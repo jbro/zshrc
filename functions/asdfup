@@ -17,4 +17,4 @@ done
 
 post=$(asdf current 2>/dev/null)
 
-diff <(echo "$pre") <(echo "$post") | bat -p --theme=gruvbox-dark
+diff <(echo "$pre") <(echo "$post") | bat -p

@@ -25,7 +25,7 @@ To track local files (env, functions, config) with their own git history, run `g
 Other directories:
 
 - `functions/internal/` — Helper functions used by config files.
-- `theme/` — Visual theme data (LS_COLORS).
+- `theme/` — Visual theme data (LS_COLORS and FZF).
 - `.completions/` — Cached/generated completions (gitignored).
 - `.plugins/` — Third-party plugins (auto-cloned, gitignored).
 
@@ -73,6 +73,19 @@ Config files in `config/` use helper functions from `functions/internal/`. These
 ## Shell settings
 
 Keybindings (emacs mode, alt+arrow word navigation, up/down history prefix search), history, direnv integration, and p10k prompt customization are configured directly in `.zshrc`. Completion initialization and styles are configured in `config/29-completions.zsh`.
+
+## Themes
+
+- `.zshrc` loads `theme/lscolors-catppuccin-mocha` for file and completion colors.
+  Its rules use the terminal's ANSI palette, so changing the terminal theme changes their
+  colors without replacing the file classifications.
+- `env/common` selects `theme/fzf-catppuccin-mocha` through FZF's native
+  `FZF_DEFAULT_OPTS_FILE`. The file contains the official
+  [Catppuccin Mocha palette](https://github.com/catppuccin/fzf). FZF reads it on
+  each invocation; `FZF_DEFAULT_OPTS` and command-line arguments can override
+  its defaults. Select a corresponding options file to change flavour.
+- bat, `rgf` previews, and `asdfup` output use bat's own configuration rather
+  than forcing a theme through an alias or command argument.
 
 ## Writing functions
 
